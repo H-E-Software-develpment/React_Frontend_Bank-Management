@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <circle cx="32" cy="32" r="30" fill="#0A1F44" stroke="#0A1F44" stroke-width="2"/>
+  
+  <polygon points="32,13 14,26 50,26" fill="#F5F6FA" stroke="#FFCD2B" stroke-width="2"/>
+  
+  <rect x="14" y="26" width="36" height="20" rx="3" fill="#F5F6FA" stroke="#FFCD2B" stroke-width="2"/>
+  
+  <rect x="18" y="30" width="4" height="12" rx="1.5" fill="#FFCD2B" stroke="#FFCD2B" stroke-width="1"/>
+  <rect x="30" y="30" width="4" height="12" rx="1.5" fill="#FFCD2B" stroke="#FFCD2B" stroke-width="1"/>
+  <rect x="42" y="30" width="4" height="12" rx="1.5" fill="#FFCD2B" stroke="#FFCD2B" stroke-width="1"/>
+  
+  <rect x="18.5" y="33" width="3" height="4" rx="0.8" fill="#FFCD2B" stroke="#0A1F44" stroke-width="0.5"/>
+  <rect x="42.5" y="33" width="3" height="4" rx="0.8" fill="#FFCD2B" stroke="#0A1F44" stroke-width="0.5"/>
+  
+  <rect x="30.5" y="36" width="3" height="8" rx="1" fill="#FFCD2B" stroke="#0A1F44" stroke-width="0.5"/>
+  
+  <rect x="14" y="46" width="36" height="4" rx="2" fill="#F5F6FA" stroke="#FFCD2B" stroke-width="2"/>
+  
+  <circle cx="32" cy="20" r="3" fill="#FFCD2B" stroke="#0A1F44" stroke-width="1"/>
+  <text x="32" y="21.8" text-anchor="middle" font-size="2.5" font-family="Arial" fill="#0A1F44" font-weight="bold">$</text>
+</svg>
