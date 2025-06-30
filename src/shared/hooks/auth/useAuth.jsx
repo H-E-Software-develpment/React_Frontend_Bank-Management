@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { login } from "../../../services/auth/authService";
+import { login, logout } from "../../../services/auth/authService";
 
 export const useAuth = () => {
   const [error, setError] = useState(null);
@@ -10,8 +10,10 @@ export const useAuth = () => {
     setError(null);
     try {
       const { token, user } = await login(username, password);
+
       localStorage.setItem("token", token);
       localStorage.setItem("user", JSON.stringify(user));
+
       return user;
     } catch (err) {
       setError(err.message);

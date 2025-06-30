@@ -42,11 +42,11 @@
   min-height: 100vh;
   background: linear-gradient(
     135deg,
-    #15559A 0%,
+    #0c5eb5 0%,
     #123C69 25%,
     #0a1f44 50%,
     #123C69 75%,
-    #15559A 100%
+    #0755aa 100%
   );
   background-size: 400% 400%;
   animation: bgMove 15s ease-in-out infinite alternate;

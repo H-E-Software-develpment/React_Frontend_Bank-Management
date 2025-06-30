@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "http://127.0.0.1:3001/hotelManager/v1", 
+  baseURL: "http://127.0.0.1:3001/bankManagement/v1",
 });
 
 api.interceptors.request.use((config) => {
@@ -21,7 +21,7 @@ api.interceptors.response.use(
       window.location.href = "/login";
     }
     return Promise.reject(error);
-  }
+  },
 );
 
 export default api;

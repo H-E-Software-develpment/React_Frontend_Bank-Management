@@ -19,7 +19,9 @@ const LoginPage = () => {
       const user = await handleLogin(username, password);
       if (user.role === "ADMINISTRATOR") {
         navigate("/admin");
-      } else {
+      } else if (user.role === "WORKER") {
+      navigate("/worker");
+      } else if (user.role === "CLIENT") {
         navigate("/client");
       }
     } catch (error) {
