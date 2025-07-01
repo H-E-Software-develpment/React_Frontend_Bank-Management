@@ -136,31 +136,32 @@ const handleEditSubmit = async (e) => {
 
   setLoading(true);
   try {
-    const name = formData.name?.trim();
-    const address = formData.address?.trim();
-    const job = formData.job?.trim();
-    const income = Number(formData.income);
+    const userId = selectedUser.uid || selectedUser._id;
 
-    if (!name || !address || !job || !income || income < 100) {
-      setToast({ type: "error", message: "Todos los campos son requeridos y válidos" });
+    // Preparamos solo los campos que hayan sido modificados y sean válidos
+    const editData = {};
+    if (formData.name.trim() && formData.name.trim() !== selectedUser.name) {
+      editData.name = formData.name.trim();
+    }
+    if (formData.address.trim() && formData.address.trim() !== selectedUser.address) {
+      editData.address = formData.address.trim();
+    }
+    if (formData.job.trim() && formData.job.trim() !== selectedUser.job) {
+      editData.job = formData.job.trim();
+    }
+    if (Number(formData.income) >= 100 && Number(formData.income) !== selectedUser.income) {
+      editData.income = Number(formData.income);
+    }
+
+    // Si no cambió nada
+    if (Object.keys(editData).length === 0) {
+      setToast({ type: "info", message: "No realizaste ningún cambio." });
       setLoading(false);
       return;
     }
 
-    const userId = selectedUser.uid || selectedUser._id;
-
-    const editData = {
-      name,
-      address,
-      job,
-      income,
-      username: selectedUser.username,
-      dpi: selectedUser.dpi          
-    };
-
     const response = await editUser(userId, editData);
 
-    // Actualiza el usuario en el frontend
     const updatedUser = { ...selectedUser, ...response.user };
     setSelectedUser(updatedUser);
     setUsers(users.map(u => (u.uid || u._id) === userId ? updatedUser : u));
@@ -170,7 +171,6 @@ const handleEditSubmit = async (e) => {
       message: "Usuario actualizado exitosamente",
     });
   } catch (error) {
-    // Muestra el error real del backend si existe
     let backendMsg = error?.response?.data?.message;
     if (!backendMsg && error?.response?.data) {
       backendMsg = JSON.stringify(error.response.data);
