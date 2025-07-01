@@ -85,81 +85,9 @@ const UserDashboard = () => {
           <section className="welcome-section">
             <div className="welcome-card">
               <h2>¡Bienvenido a tu Panel de Cliente!</h2>
-              <p>
-                Desde aqu�� puedes gestionar tu perfil y ver tu información
-                personal.
-              </p>
+              <p>Puedes gestionar tu perfil y ver tu información personal.</p>
             </div>
           </section>
-
-          {profile && (
-            <section className="profile-overview">
-              <h2>Resumen de tu Perfil</h2>
-              <div className="profile-card">
-                <div className="profile-header">
-                  <div className="profile-avatar">
-                    <svg viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,14C16.42,14 20,15.79 20,18V20H4V18C4,15.79 7.58,14 12,14Z" />
-                    </svg>
-                  </div>
-                  <div className="profile-basic">
-                    <h3>{profile.name}</h3>
-                    <span className="user-role">{profile.role}</span>
-                  </div>
-                </div>
-
-                <div className="profile-details">
-                  <div className="detail-row">
-                    <div className="detail-item">
-                      <strong>Email:</strong>
-                      <span>{profile.email}</span>
-                    </div>
-                    <div className="detail-item">
-                      <strong>Teléfono:</strong>
-                      <span>{profile.phone}</span>
-                    </div>
-                  </div>
-
-                  <div className="detail-row">
-                    <div className="detail-item">
-                      <strong>DPI:</strong>
-                      <span>{profile.dpi}</span>
-                    </div>
-                    <div className="detail-item">
-                      <strong>Usuario:</strong>
-                      <span>{profile.username}</span>
-                    </div>
-                  </div>
-
-                  <div className="detail-row">
-                    <div className="detail-item">
-                      <strong>Dirección:</strong>
-                      <span>{profile.address}</span>
-                    </div>
-                    <div className="detail-item">
-                      <strong>Trabajo:</strong>
-                      <span>{profile.job}</span>
-                    </div>
-                  </div>
-
-                  <div className="detail-row">
-                    <div className="detail-item income-highlight">
-                      <strong>Ingresos Mensuales:</strong>
-                      <span className="income-amount">
-                        Q{profile.income?.toLocaleString()}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="profile-actions">
-                  <button className="edit-profile-btn" onClick={goToProfile}>
-                    Editar Perfil
-                  </button>
-                </div>
-              </div>
-            </section>
-          )}
 
           <section className="quick-actions">
             <h2>Acciones Rápidas</h2>
