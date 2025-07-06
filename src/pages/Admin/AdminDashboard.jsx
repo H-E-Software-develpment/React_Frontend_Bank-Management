@@ -285,18 +285,6 @@ const AdminDashboard = () => {
                       <span className="stat-value">{stats.workers}</span>
                     </div>
                   </div>
-
-                  <div className="stat-card admins">
-                    <div className="stat-icon">
-                      <svg viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M12,1L21,5V11C21,16.55 17.16,21.74 12,23C6.84,21.74 3,16.55 3,11V5L12,1M12,7C13.1,7 14,7.9 14,9C14,10.1 13.1,11 12,11C10.9,11 10,10.1 10,9C10,7.9 10.9,7 12,7M12,13C13.8,13 15.5,13.9 16.4,15.2C15.6,16.3 13.9,17 12,17C10.1,17 8.4,16.3 7.6,15.2C8.5,13.9 10.2,13 12,13Z" />
-                      </svg>
-                    </div>
-                    <div className="stat-info">
-                      <h3>Administradores</h3>
-                      <span className="stat-value">{stats.admins}</span>
-                    </div>
-                  </div>
                 </div>
               </section>
 

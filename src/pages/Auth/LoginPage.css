@@ -42,11 +42,11 @@
   min-height: 100vh;
   background: linear-gradient(
     135deg,
-    #0c5eb5 0%,
-    #123C69 25%,
-    #0a1f44 50%,
-    #123C69 75%,
-    #0755aa 100%
+    #226a47 0%,
+    #0eb6b3 25%,
+    #0a443c 50%,
+    #0fb59f 75%,
+    #035826 100%
   );
   background-size: 400% 400%;
   animation: bgMove 15s ease-in-out infinite alternate;
@@ -186,11 +186,7 @@
   margin-bottom: 0.5rem;
   font-size: 2.2rem;
   font-weight: 700;
-  background: linear-gradient(
-    135deg,
-    var(--primary-color),
-    var(--secondary-color)
-  );
+  background: linear-gradient(135deg, #00cec9, #00b894);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -277,7 +273,7 @@
 .input-icon svg {
   width: 24px;
   height: 24px;
-  color: var(--primary-color);
+  color: #00cec9;
   transition: all var(--transition-normal) ease;
 }
 
@@ -323,23 +319,19 @@
 .toggle-password svg {
   width: 24px;
   height: 24px;
-  color: var(--primary-color);
+  color: #00cec9;
   transition: all var(--transition-normal) ease;
 }
 
 .toggle-password.active svg {
   transform: rotateY(180deg);
-  color: var(--secondary-color);
+  color: #00b894;
 }
 
 /* Button Styles */
 .login-form button[type="submit"] {
   padding: 1rem 2rem;
-  background: linear-gradient(
-    135deg,
-    var(--primary-color),
-    var(--secondary-color)
-  );
+  background: linear-gradient(135deg, #00cec9, #00b894);
   color: white;
   border: none;
   border-radius: var(--radius-md);
@@ -348,7 +340,7 @@
   text-transform: uppercase;
   cursor: pointer;
   box-shadow:
-    0 6px 20px rgba(59, 130, 246, 0.25),
+    0 6px 20px rgba(0, 206, 201, 0.25),
     0 2px 8px rgba(0, 0, 0, 0.1);
   transition: all var(--transition-normal) cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
@@ -373,14 +365,10 @@
 }
 
 .login-form button[type="submit"]:hover {
-  background: linear-gradient(
-    135deg,
-    var(--secondary-color),
-    var(--accent-color)
-  );
+  background: linear-gradient(135deg, #00b894, #81e6d9);
   transform: translateY(-2px) scale(1.02);
   box-shadow:
-    0 12px 40px rgba(59, 130, 246, 0.35),
+    0 12px 40px rgba(0, 206, 201, 0.35),
     0 6px 16px rgba(0, 0, 0, 0.12);
 }
 
@@ -391,7 +379,7 @@
 
 .login-form button[type="submit"]:active {
   transform: scale(0.97);
-  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+  box-shadow: 0 4px 12px rgba(0, 206, 201, 0.2);
 }
 
 .login-form button[type="submit"]:disabled {
