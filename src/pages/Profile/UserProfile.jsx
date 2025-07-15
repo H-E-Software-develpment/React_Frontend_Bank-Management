@@ -93,8 +93,30 @@ const UserProfile = () => {
     }
   };
 
+  const validatePassword = (password) => {
+    const minLength = password.length >= 8;
+    const hasLowercase = /[a-z]/.test(password);
+    const hasUppercase = /[A-Z]/.test(password);
+    const hasNumbers = /\d/.test(password);
+    const hasSymbols = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+
+    return (
+      minLength && hasLowercase && hasUppercase && hasNumbers && hasSymbols
+    );
+  };
+
   const handlePasswordSubmit = async (e) => {
     e.preventDefault();
+
+    if (!validatePassword(passwordData.password)) {
+      setToast({
+        type: "error",
+        message:
+          "La contraseña debe tener al menos 8 caracteres, incluyendo mayúsculas, minúsculas, números y símbolos",
+      });
+      return;
+    }
+
     if (passwordData.password !== passwordData.confirmation) {
       setToast({ type: "error", message: "Las contraseñas no coinciden" });
       return;
@@ -102,9 +124,7 @@ const UserProfile = () => {
 
     setLoading(true);
     try {
-      // Use the user ID from the profile response, not from localStorage
-      const userId = profile?.uid || user?.uid;
-      await changeUserPassword(userId, passwordData);
+      await changeUserPassword(passwordData);
       setPasswordData({ password: "", confirmation: "" });
       setToast({
         type: "success",

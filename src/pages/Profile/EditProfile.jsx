@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import {findUsers,  editUser, deleteUser,} from "../../services/user/userService";
+import {
+  findUsers,
+  editUser,
+  deleteUser,
+} from "../../services/user/userService";
 import { logout } from "../../services/auth/authService";
 import LoadingSpinner from "../../components/common/LoadingSpinner";
 import Toast from "../../components/common/Toast";
@@ -130,60 +134,68 @@ const EditProfile = () => {
     searchUsers();
   };
 
-const handleEditSubmit = async (e) => {
-  e.preventDefault();
-  if (!selectedUser) return;
+  const handleEditSubmit = async (e) => {
+    e.preventDefault();
+    if (!selectedUser) return;
 
-  setLoading(true);
-  try {
-    const userId = selectedUser.uid || selectedUser._id;
+    setLoading(true);
+    try {
+      const userId = selectedUser.uid || selectedUser._id;
 
-    // Preparamos solo los campos que hayan sido modificados y sean válidos
-    const editData = {};
-    if (formData.name.trim() && formData.name.trim() !== selectedUser.name) {
-      editData.name = formData.name.trim();
-    }
-    if (formData.address.trim() && formData.address.trim() !== selectedUser.address) {
-      editData.address = formData.address.trim();
-    }
-    if (formData.job.trim() && formData.job.trim() !== selectedUser.job) {
-      editData.job = formData.job.trim();
-    }
-    if (Number(formData.income) >= 100 && Number(formData.income) !== selectedUser.income) {
-      editData.income = Number(formData.income);
-    }
+      // Preparamos solo los campos que hayan sido modificados y sean válidos
+      const editData = {};
+      if (formData.name.trim() && formData.name.trim() !== selectedUser.name) {
+        editData.name = formData.name.trim();
+      }
+      if (
+        formData.address.trim() &&
+        formData.address.trim() !== selectedUser.address
+      ) {
+        editData.address = formData.address.trim();
+      }
+      if (formData.job.trim() && formData.job.trim() !== selectedUser.job) {
+        editData.job = formData.job.trim();
+      }
+      if (
+        Number(formData.income) >= 100 &&
+        Number(formData.income) !== selectedUser.income
+      ) {
+        editData.income = Number(formData.income);
+      }
 
-    // Si no cambió nada
-    if (Object.keys(editData).length === 0) {
-      setToast({ type: "info", message: "No realizaste ningún cambio." });
+      // Si no cambió nada
+      if (Object.keys(editData).length === 0) {
+        setToast({ type: "info", message: "No realizaste ningún cambio." });
+        setLoading(false);
+        return;
+      }
+
+      const response = await editUser(userId, editData);
+
+      const updatedUser = { ...selectedUser, ...response.user };
+      setSelectedUser(updatedUser);
+      setUsers(
+        users.map((u) => ((u.uid || u._id) === userId ? updatedUser : u)),
+      );
+      setEditMode(false);
+      setToast({
+        type: "success",
+        message: "Usuario actualizado exitosamente",
+      });
+    } catch (error) {
+      let backendMsg = error?.response?.data?.message;
+      if (!backendMsg && error?.response?.data) {
+        backendMsg = JSON.stringify(error.response.data);
+      }
+      setToast({
+        type: "error",
+        message: backendMsg || error.message || "Error al editar usuario",
+      });
+      console.error("Error completo:", error, error?.response?.data);
+    } finally {
       setLoading(false);
-      return;
     }
-
-    const response = await editUser(userId, editData);
-
-    const updatedUser = { ...selectedUser, ...response.user };
-    setSelectedUser(updatedUser);
-    setUsers(users.map(u => (u.uid || u._id) === userId ? updatedUser : u));
-    setEditMode(false);
-    setToast({
-      type: "success",
-      message: "Usuario actualizado exitosamente",
-    });
-  } catch (error) {
-    let backendMsg = error?.response?.data?.message;
-    if (!backendMsg && error?.response?.data) {
-      backendMsg = JSON.stringify(error.response.data);
-    }
-    setToast({
-      type: "error",
-      message: backendMsg || error.message || "Error al editar usuario"
-    });
-    console.error("Error completo:", error, error?.response?.data);
-  } finally {
-    setLoading(false);
-  }
-};
+  };
   const handleDeleteUser = async () => {
     if (!selectedUser) return;
 
@@ -252,7 +264,7 @@ const handleEditSubmit = async (e) => {
             </svg>
             Volver
           </button>
-          <h1>Editar Usuarios</h1>
+          <h1>Gestionar Usuarios</h1>
           <button className="logout-btn" onClick={handleLogout}>
             Cerrar Sesión
           </button>
@@ -261,110 +273,14 @@ const handleEditSubmit = async (e) => {
 
       <main className="edit-main">
         <div className="edit-container">
-          <section className="search-section">
-            <h2>Buscar Usuario</h2>
-            <form className="search-form" onSubmit={handleSearchSubmit}>
-              <div className="search-grid">
-                <div className="search-group">
-                  <label htmlFor="uid">ID Usuario:</label>
-                  <input
-                    type="text"
-                    id="uid"
-                    name="uid"
-                    value={searchQuery.uid}
-                    onChange={handleSearchChange}
-                    placeholder="Buscar por ID..."
-                  />
-                </div>
-                <div className="search-group">
-                  <label htmlFor="username">Nombre de Usuario:</label>
-                  <input
-                    type="text"
-                    id="username"
-                    name="username"
-                    value={searchQuery.username}
-                    onChange={handleSearchChange}
-                    placeholder="Buscar por usuario..."
-                  />
-                </div>
-                <div className="search-group">
-                  <label htmlFor="name">Nombre:</label>
-                  <input
-                    type="text"
-                    id="name"
-                    name="name"
-                    value={searchQuery.name}
-                    onChange={handleSearchChange}
-                    placeholder="Buscar por nombre..."
-                  />
-                </div>
-                {currentUser.role === "ADMINISTRATOR" && (
-                  <div className="search-group">
-                    <label htmlFor="role">Rol:</label>
-                    <select
-                      id="role"
-                      name="role"
-                      value={searchQuery.role}
-                      onChange={handleSearchChange}
-                    >
-                      <option value="">Todos los roles</option>
-                      <option value="CLIENT">Cliente</option>
-                      <option value="WORKER">Trabajador</option>
-                    </select>
-                  </div>
-                )}
-              </div>
-              <div className="search-actions">
-                <button type="submit" className="search-btn" disabled={loading}>
-                  Buscar
-                </button>
-                <button
-                  type="button"
-                  className="clear-btn"
-                  onClick={clearSearch}
-                >
-                  Limpiar
-                </button>
-              </div>
-            </form>
-          </section>
-
-          {users.length > 0 && (
-            <section className="users-list-section">
-              <h2>Resultados de Búsqueda</h2>
-              <div className="users-grid">
-                {users.map((user) => (
-                  <div
-                    key={user.uid || user._id}
-                    className={`user-card ${(selectedUser?.uid || selectedUser?._id) === (user.uid || user._id) ? "selected" : ""}`}
-                    onClick={() => selectUser(user)}
-                  >
-                    <div className="user-card-header">
-                      <h3>{user.name}</h3>
-                      <span className={`user-role ${user.role.toLowerCase()}`}>
-                        {user.role}
-                      </span>
-                    </div>
-                    <div className="user-card-body">
-                      <p>
-                        <strong>Usuario:</strong> {user.username}
-                      </p>
-                      <p>
-                        <strong>Email:</strong> {user.email}
-                      </p>
-                      <p>
-                        <strong>Trabajo:</strong> {user.job}
-                      </p>
-                      <p>
-                        <strong>Ingresos:</strong> Q
-                        {user.income?.toLocaleString()}
-                      </p>
-                    </div>
-                    <div className="user-card-footer">
-                      <span className="user-id">ID: {user.uid || user._id}</span>
-                    </div>
-                  </div>
-                ))}
+          {!selectedUser && (
+            <section className="no-user-section">
+              <div className="no-user-message">
+                <h2>Usuario no seleccionado</h2>
+                <p>
+                  Acceda a esta página seleccionando un usuario específico desde
+                  el panel de administración.
+                </p>
               </div>
             </section>
           )}

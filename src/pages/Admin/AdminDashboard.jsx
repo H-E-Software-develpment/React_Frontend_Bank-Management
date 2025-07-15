@@ -185,24 +185,6 @@ const AdminDashboard = () => {
                   <path d="M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,14C16.42,14 20,15.79 20,18V20H4V18C4,15.79 7.58,14 12,14Z" />
                 </svg>
               </button>
-              <button
-                className="icon-button edit-user-btn"
-                onClick={goToEditUser}
-                title="Editar usuarios"
-              >
-                <svg viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M16,4C18.2,4 20,5.8 20,8C20,10.2 18.2,12 16,12C13.8,12 12,10.2 12,8C12,5.8 13.8,4 16,4M16,14C20.4,14 24,15.8 24,18V20H8V18C8,15.8 11.6,14 16,14M12.5,11.5C15.1,11.5 17.5,12.8 17.5,15V16.5H6.5V15C6.5,12.8 8.9,11.5 12.5,11.5M8.5,4C10.7,4 12.5,5.8 12.5,8C12.5,10.2 10.7,12 8.5,12C6.3,12 4.5,10.2 4.5,8C4.5,5.8 6.3,4 8.5,4Z" />
-                </svg>
-              </button>
-              <button
-                className="icon-button create-user-btn"
-                onClick={goToCreateUser}
-                title="Crear usuario"
-              >
-                <svg viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M15,14C12.33,14 7,15.33 7,18V20H23V18C23,15.33 17.67,14 15,14M6,10V7H4V10H1V12H4V15H6V12H9V10M15,12A4,4 0 0,0 19,8A4,4 0 0,0 15,4A4,4 0 0,0 11,8A4,4 0 0,0 15,12Z" />
-                </svg>
-              </button>
               <button className="logout-btn" onClick={handleLogout}>
                 Cerrar Sesión
               </button>
@@ -230,15 +212,6 @@ const AdminDashboard = () => {
               <path d="M16,4C18.2,4 20,5.8 20,8C20,10.2 18.2,12 16,12C13.8,12 12,10.2 12,8C12,5.8 13.8,4 16,4M16,14C20.4,14 24,15.8 24,18V20H8V18C8,15.8 11.6,14 16,14M12.5,11.5C15.1,11.5 17.5,12.8 17.5,15V16.5H6.5V15C6.5,12.8 8.9,11.5 12.5,11.5M8.5,4C10.7,4 12.5,5.8 12.5,8C12.5,10.2 10.7,12 8.5,12C6.3,12 4.5,10.2 4.5,8C4.5,5.8 6.3,4 8.5,4Z" />
             </svg>
             Gestionar Usuarios
-          </button>
-          <button
-            className={`nav-btn ${activeView === "search" ? "active" : ""}`}
-            onClick={() => setActiveView("search")}
-          >
-            <svg viewBox="0 0 24 24" fill="currentColor">
-              <path d="M9.5,3A6.5,6.5 0 0,1 16,9.5C16,11.11 15.41,12.59 14.44,13.73L14.71,14H15.5L20.5,19L19,20.5L14,15.5V14.71L13.73,14.44C12.59,15.41 11.11,16 9.5,16A6.5,6.5 0 0,1 3,9.5A6.5,6.5 0 0,1 9.5,3M9.5,5C7,5 5,7 5,9.5C5,12 7,14 9.5,14C12,14 14,12 14,9.5C14,7 12,5 9.5,5Z" />
-            </svg>
-            Buscar Usuarios
           </button>
         </div>
       </nav>
@@ -334,72 +307,6 @@ const AdminDashboard = () => {
                 </button>
               </div>
 
-              {loading ? (
-                <LoadingSpinner />
-              ) : (
-                <div className="users-grid">
-                  {users.length > 0 ? (
-                    users.map((user) => (
-                      <div key={user.uid} className="user-management-card">
-                        <div className="user-card-header">
-                          <h3>{user.name}</h3>
-                          <span
-                            className={`user-role ${user.role.toLowerCase()}`}
-                          >
-                            {user.role}
-                          </span>
-                        </div>
-                        <div className="user-card-body">
-                          <p>
-                            <strong>Usuario:</strong> {user.username}
-                          </p>
-                          <p>
-                            <strong>Email:</strong> {user.email}
-                          </p>
-                          <p>
-                            <strong>Teléfono:</strong> {user.phone}
-                          </p>
-                          <p>
-                            <strong>Trabajo:</strong> {user.job}
-                          </p>
-                          <p>
-                            <strong>Ingresos:</strong> Q
-                            {user.income?.toLocaleString()}
-                          </p>
-                        </div>
-                        <div className="user-card-actions">
-                          {canEditUser(user) && (
-                            <button
-                              className="edit-user-action"
-                              onClick={() =>
-                                navigate(`/edituser?uid=${user.uid}`)
-                              }
-                            >
-                              Editar
-                            </button>
-                          )}
-                        </div>
-                      </div>
-                    ))
-                  ) : (
-                    <div className="no-users">
-                      <p>No se encontraron usuarios</p>
-                      <button
-                        className="load-all-btn"
-                        onClick={loadAllUsersExcludingAdmins}
-                      >
-                        Cargar Todos los Usuarios
-                      </button>
-                    </div>
-                  )}
-                </div>
-              )}
-            </section>
-          )}
-
-          {activeView === "search" && (
-            <section className="search-section">
-              <h2>Buscar y Filtrar Usuarios</h2>
               <form className="search-form" onSubmit={handleSearch}>
                 <div className="search-grid">
                   <div className="search-group">
@@ -467,48 +374,55 @@ const AdminDashboard = () => {
               {loading ? (
                 <LoadingSpinner />
               ) : (
-                <div className="search-results">
+                <div className="users-grid">
                   {users.length > 0 ? (
-                    <div className="users-grid">
-                      {users.map((user) => (
-                        <div key={user.uid} className="user-management-card">
-                          <div className="user-card-header">
-                            <h3>{user.name}</h3>
-                            <span
-                              className={`user-role ${user.role.toLowerCase()}`}
-                            >
-                              {user.role}
-                            </span>
-                          </div>
-                          <div className="user-card-body">
-                            <p>
-                              <strong>Usuario:</strong> {user.username}
-                            </p>
-                            <p>
-                              <strong>Email:</strong> {user.email}
-                            </p>
-                            <p>
-                              <strong>Teléfono:</strong> {user.phone}
-                            </p>
-                            <p>
-                              <strong>Trabajo:</strong> {user.job}
-                            </p>
-                            <p>
-                              <strong>Ingresos:</strong> Q
-                              {user.income?.toLocaleString()}
-                            </p>
-                          </div>
-                          <div className="user-card-footer">
-                            <span className="user-id">ID: {user.uid}</span>
-                          </div>
+                    users.map((user) => (
+                      <div
+                        key={user.uid}
+                        className={`user-management-card ${canEditUser(user) ? "clickable" : ""}`}
+                        onClick={() =>
+                          canEditUser(user) &&
+                          navigate(`/edituser?uid=${user.uid}`)
+                        }
+                        style={canEditUser(user) ? { cursor: "pointer" } : {}}
+                      >
+                        <div className="user-card-header">
+                          <h3>{user.name}</h3>
+                          <span
+                            className={`user-role ${user.role.toLowerCase()}`}
+                          >
+                            {user.role}
+                          </span>
                         </div>
-                      ))}
-                    </div>
+                        <div className="user-card-body">
+                          <p>
+                            <strong>Usuario:</strong> {user.username}
+                          </p>
+                          <p>
+                            <strong>Email:</strong> {user.email}
+                          </p>
+                          <p>
+                            <strong>Teléfono:</strong> {user.phone}
+                          </p>
+                          <p>
+                            <strong>Trabajo:</strong> {user.job}
+                          </p>
+                          <p>
+                            <strong>Ingresos:</strong> Q
+                            {user.income?.toLocaleString()}
+                          </p>
+                        </div>
+                      </div>
+                    ))
                   ) : (
-                    <div className="no-results">
-                      <p>
-                        No se encontraron usuarios con los filtros aplicados
-                      </p>
+                    <div className="no-users">
+                      <p>No se encontraron usuarios</p>
+                      <button
+                        className="load-all-btn"
+                        onClick={loadAllUsersExcludingAdmins}
+                      >
+                        Cargar Todos los Usuarios
+                      </button>
                     </div>
                   )}
                 </div>

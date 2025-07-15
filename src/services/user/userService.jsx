@@ -61,10 +61,10 @@ export const editUserProfile = async (profileData) => {
   }
 };
 
-export const changeUserPassword = async (uid, passwordData) => {
+export const changeUserPassword = async (passwordData) => {
   try {
     const response = await api.put(
-      `/user/changeUserPassword/${uid}`,
+      "/user/changeUserPassword",
       passwordData,
     );
     return response.data;
