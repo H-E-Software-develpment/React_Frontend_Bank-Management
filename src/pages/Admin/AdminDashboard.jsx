@@ -4,6 +4,7 @@ import { getUsersForAdmin, findUsers } from "../../services/user/userService";
 import { logout } from "../../services/auth/authService";
 import LoadingSpinner from "../../components/common/LoadingSpinner";
 import Toast from "../../components/common/Toast";
+import CreateUserOptions from "../../components/account/CreateUserOptions";
 import "./AdminDashboard.css";
 
 const AdminDashboard = () => {
@@ -21,6 +22,7 @@ const AdminDashboard = () => {
     limit: 10,
     from: 0,
   });
+  const [showCreateOptions, setShowCreateOptions] = useState(false);
 
   const user = JSON.parse(localStorage.getItem("user"));
 
@@ -133,8 +135,16 @@ const AdminDashboard = () => {
     navigate("/edituser");
   };
 
-  const goToCreateUser = () => {
-    navigate("/createuser");
+  const handleShowCreateOptions = () => {
+    setShowCreateOptions(true);
+  };
+
+  const handleCloseCreateOptions = () => {
+    setShowCreateOptions(false);
+    // Refresh the users list after creating
+    if (activeView === "users") {
+      loadAllUsersExcludingAdmins();
+    }
   };
 
   const getUserStats = () => {
@@ -296,15 +306,46 @@ const AdminDashboard = () => {
             <section className="users-management-section">
               <div className="section-header">
                 <h2>Gestión de Usuarios</h2>
-                <button
-                  className="create-user-action-btn"
-                  onClick={goToCreateUser}
-                >
-                  <svg viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z" />
-                  </svg>
-                  Crear Usuario
-                </button>
+                <div className="create-options-grid">
+                  <div
+                    className="create-option-card"
+                    onClick={handleShowCreateOptions}
+                  >
+                    <div className="option-icon">
+                      <svg viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M15,14C12.33,14 7,15.33 7,18V20H23V18C23,15.33 17.67,14 15,14M6,10V7H4V10H1V12H4V15H6V12H9V10M15,12A4,4 0 0,0 19,8A4,4 0 0,0 15,4A4,4 0 0,0 11,8A4,4 0 0,0 15,12Z" />
+                      </svg>
+                    </div>
+                    <h3>Crear Usuario</h3>
+                    <p>Usuario sin cuenta bancaria</p>
+                  </div>
+
+                  <div
+                    className="create-option-card"
+                    onClick={handleShowCreateOptions}
+                  >
+                    <div className="option-icon">
+                      <svg viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12,15C12.81,15 13.5,14.7 14.11,14.11C14.7,13.5 15,12.81 15,12C15,11.19 14.7,10.5 14.11,9.89C13.5,9.3 12.81,9 12,9C11.19,9 10.5,9.3 9.89,9.89C9.3,10.5 9,11.19 9,12C9,12.81 9.3,13.5 9.89,14.11C10.5,14.7 11.19,15 12,15M12,2C14.21,2 16.21,2.81 17.71,4.29C19.19,5.79 20,7.79 20,10C20,12.21 19.19,14.21 17.71,15.71C16.21,17.19 14.21,18 12,18C9.79,18 7.79,17.19 6.29,15.71C4.81,14.21 4,12.21 4,10C4,7.79 4.81,5.79 6.29,4.29C7.79,2.81 9.79,2 12,2Z" />
+                      </svg>
+                    </div>
+                    <h3>Cliente con Cuenta</h3>
+                    <p>Usuario cliente con cuenta bancaria</p>
+                  </div>
+
+                  <div
+                    className="create-option-card"
+                    onClick={handleShowCreateOptions}
+                  >
+                    <div className="option-icon">
+                      <svg viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M11,9H13V7H11M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M11,17H13V11H11V17Z" />
+                      </svg>
+                    </div>
+                    <h3>Crear Cuenta</h3>
+                    <p>Cuenta para cliente existente</p>
+                  </div>
+                </div>
               </div>
 
               <form className="search-form" onSubmit={handleSearch}>
@@ -431,6 +472,13 @@ const AdminDashboard = () => {
           )}
         </div>
       </main>
+
+      {showCreateOptions && (
+        <CreateUserOptions
+          userRole="ADMINISTRATOR"
+          onClose={handleCloseCreateOptions}
+        />
+      )}
     </div>
   );
 };
