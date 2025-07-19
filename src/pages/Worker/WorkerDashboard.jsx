@@ -5,6 +5,9 @@ import { logout } from "../../services/auth/authService";
 import LoadingSpinner from "../../components/common/LoadingSpinner";
 import Toast from "../../components/common/Toast";
 import CreateUserOptions from "../../components/account/CreateUserOptions";
+import DepositForm from "../../components/movement/DepositForm";
+import MovementHistory from "../../components/movement/MovementHistory";
+import AccountsByMovements from "../../components/movement/AccountsByMovements";
 import "./WorkerDashboard.css";
 
 const WorkerDashboard = () => {
@@ -21,6 +24,7 @@ const WorkerDashboard = () => {
   });
   const [showCreateOptions, setShowCreateOptions] = useState(false);
   const [selectedCreateOption, setSelectedCreateOption] = useState(null);
+  const [activeView, setActiveView] = useState("clients");
 
   const user = JSON.parse(localStorage.getItem("user"));
 
@@ -98,6 +102,10 @@ const WorkerDashboard = () => {
     loadUsers();
   };
 
+  const handleViewChange = (view) => {
+    setActiveView(view);
+  };
+
   return (
     <div className="worker-dashboard">
       {toast && (
@@ -160,15 +168,6 @@ const WorkerDashboard = () => {
               <path d="M3,6V18H21V6H3M12,9A3,3 0 0,1 15,12A3,3 0 0,1 12,15A3,3 0 0,1 9,12A3,3 0 0,1 12,9Z" />
             </svg>
             Historial de Movimientos
-          </button>
-          <button
-            className={`nav-btn ${activeView === "reports" ? "active" : ""}`}
-            onClick={() => handleViewChange("reports")}
-          >
-            <svg viewBox="0 0 24 24" fill="currentColor">
-              <path d="M19,3H5C3.9,3 3,3.9 3,5V19C3,20.1 3.9,21 5,21H19C20.1,21 21,20.1 21,19V5C21,3.9 20.1,3 19,3M13,9H18V7H13V9M13,13H18V11H13V13M13,17H18V15H13V17M11,15H6V13H11V15M11,11H6V9H11V11M11,7H6V5H11V7Z" />
-            </svg>
-            Reportes de Cuentas
           </button>
         </div>
       </nav>
@@ -360,15 +359,14 @@ const WorkerDashboard = () => {
           )}
 
           {activeView === "movements" && (
-            <section className="movements-section">
-              <MovementHistory userRole="WORKER" />
-            </section>
-          )}
-
-          {activeView === "reports" && (
-            <section className="reports-section">
-              <AccountsByMovements />
-            </section>
+            <>
+              <section className="movements-section">
+                <MovementHistory userRole="WORKER" />
+              </section>
+              <section className="reports-section">
+                <AccountsByMovements />
+              </section>
+            </>
           )}
         </div>
       </main>

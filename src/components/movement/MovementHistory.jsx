@@ -245,7 +245,14 @@ const MovementHistory = ({ userRole }) => {
 
         <div className="filter-actions">
           <button type="submit" className="search-btn" disabled={loading}>
-            {loading ? <LoadingSpinner /> : "Buscar"}
+            {loading ? (
+              <>
+                <span className="btn-spinner"></span>
+                Buscando...
+              </>
+            ) : (
+              "Buscar"
+            )}
           </button>
           <button
             type="button"

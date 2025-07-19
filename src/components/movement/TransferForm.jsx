@@ -167,11 +167,20 @@ const TransferForm = ({ onSuccess, onCancel }) => {
           <button type="submit" className="submit-btn" disabled={loading}>
             {loading ? (
               <>
-                <LoadingSpinner />
-                Procesando...
+                <span className="btn-spinner"></span>
+                Procesando transferencia...
               </>
             ) : (
-              "Realizar Transferencia"
+              <>
+                <svg
+                  className="btn-icon"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                >
+                  <path d="M15.95 21.175L13.1 18.3L14.5 16.9L15.95 18.35L19.425 14.875L20.825 16.275L15.95 21.175ZM8.5 18Q6.425 18 5.212 16.787Q4 15.575 4 13.5Q4 11.425 5.212 10.212Q6.425 9 8.5 9H16L14.2 7.2L15.6 5.8L20 10.2L15.6 14.6L14.2 13.2L16 11.4H8.5Q7.275 11.4 6.437 12.237Q5.6 13.075 5.6 14.3Q5.6 15.525 6.437 16.362Q7.275 17.2 8.5 17.2H10V18.8H8.5Z" />
+                </svg>
+                Realizar Transferencia
+              </>
             )}
           </button>
         </div>

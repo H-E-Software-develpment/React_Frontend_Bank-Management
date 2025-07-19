@@ -8,12 +8,12 @@ import CreateUserOptions from "../../components/account/CreateUserOptions";
 import DepositForm from "../../components/movement/DepositForm";
 import MovementHistory from "../../components/movement/MovementHistory";
 import AccountsByMovements from "../../components/movement/AccountsByMovements";
+import ProductManager from "../../components/product/ProductManager";
 import "./AdminDashboard.css";
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
   const [users, setUsers] = useState([]);
-  const [topIncomeUsers, setTopIncomeUsers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [toast, setToast] = useState(null);
   const [activeView, setActiveView] = useState("overview");
@@ -34,14 +34,12 @@ const AdminDashboard = () => {
     if (activeView === "users") {
       loadAllUsersExcludingAdmins();
     } else if (activeView === "overview") {
-      loadTopIncomeUsers();
       loadAllUsersExcludingAdmins(); // Load users for stats
     }
   }, [activeView]);
 
   // Load data on component mount
   useEffect(() => {
-    loadTopIncomeUsers();
     loadAllUsersExcludingAdmins();
   }, []);
 
@@ -54,22 +52,6 @@ const AdminDashboard = () => {
         (u) => u.role !== "ADMINISTRATOR",
       );
       setUsers(filteredUsers);
-    } catch (error) {
-      setToast({ type: "error", message: error.message });
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const loadTopIncomeUsers = async () => {
-    setLoading(true);
-    try {
-      const response = await getUsersForAdmin();
-      const sortedUsers = (response.user || [])
-        .filter((u) => u.income)
-        .sort((a, b) => b.income - a.income)
-        .slice(0, 5);
-      setTopIncomeUsers(sortedUsers);
     } catch (error) {
       setToast({ type: "error", message: error.message });
     } finally {
@@ -248,13 +230,13 @@ const AdminDashboard = () => {
             Historial de Movimientos
           </button>
           <button
-            className={`nav-btn ${activeView === "reports" ? "active" : ""}`}
-            onClick={() => setActiveView("reports")}
+            className={`nav-btn ${activeView === "products" ? "active" : ""}`}
+            onClick={() => setActiveView("products")}
           >
             <svg viewBox="0 0 24 24" fill="currentColor">
-              <path d="M19,3H5C3.9,3 3,3.9 3,5V19C3,20.1 3.9,21 5,21H19C20.1,21 21,20.1 21,19V5C21,3.9 20.1,3 19,3M13,9H18V7H13V9M13,13H18V11H13V13M13,17H18V15H13V17M11,15H6V13H11V15M11,11H6V9H11V11M11,7H6V5H11V7Z" />
+              <path d="M12,2A3,3 0 0,1 15,5V9A3,3 0 0,1 12,12A3,3 0 0,1 9,9V5A3,3 0 0,1 12,2M12,4A1,1 0 0,0 11,5V9A1,1 0 0,0 12,10A1,1 0 0,0 13,9V5A1,1 0 0,0 12,4M21,9A1,1 0 0,1 22,10V12A1,1 0 0,1 21,13H19A1,1 0 0,1 18,12V10A1,1 0 0,1 19,9H21M5,9A1,1 0 0,1 6,10V12A1,1 0 0,1 5,13H3A1,1 0 0,1 2,12V10A1,1 0 0,1 3,9H5M12,17A3,3 0 0,1 15,20V22H9V20A3,3 0 0,1 12,17Z" />
             </svg>
-            Reportes de Cuentas
+            Gestión de Productos
           </button>
         </div>
       </nav>
@@ -304,33 +286,9 @@ const AdminDashboard = () => {
                 </div>
               </section>
 
-              <section className="top-income-section">
-                <h2>Usuarios con Mayores Ingresos</h2>
-                {loading ? (
-                  <LoadingSpinner />
-                ) : (
-                  <div className="top-income-list">
-                    {topIncomeUsers.length > 0 ? (
-                      topIncomeUsers.map((user, index) => (
-                        <div key={user.uid} className="income-card">
-                          <div className="income-rank">#{index + 1}</div>
-                          <div className="income-user-info">
-                            <h3>{user.name}</h3>
-                            <p>{user.email}</p>
-                            <span className="user-role-badge">{user.role}</span>
-                          </div>
-                          <div className="income-amount">
-                            Q{user.income?.toLocaleString()}
-                          </div>
-                        </div>
-                      ))
-                    ) : (
-                      <div className="no-data">
-                        <p>No hay datos de ingresos disponibles</p>
-                      </div>
-                    )}
-                  </div>
-                )}
+              <section className="reports-section">
+                <h2>Reportes de Cuentas</h2>
+                <AccountsByMovements />
               </section>
             </>
           )}
@@ -527,9 +485,9 @@ const AdminDashboard = () => {
             </section>
           )}
 
-          {activeView === "reports" && (
-            <section className="reports-section">
-              <AccountsByMovements />
+          {activeView === "products" && (
+            <section className="products-section">
+              <ProductManager userRole="ADMINISTRATOR" />
             </section>
           )}
         </div>
