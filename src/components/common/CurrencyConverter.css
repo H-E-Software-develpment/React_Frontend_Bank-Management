@@ -1,0 +1,253 @@
+.currency-converter {
+  background: #f8f9fa;
+  border: 1px solid #e1e5e9;
+  border-radius: 10px;
+  padding: 15px;
+  margin: 10px 0;
+  transition: all 0.3s ease;
+}
+
+.currency-converter.expanded {
+  background: white;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.converter-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+}
+
+.original-amount {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.amount-label {
+  font-size: 12px;
+  color: #6c757d;
+  font-weight: 500;
+}
+
+.amount-value {
+  font-size: 16px;
+  color: #2c3e50;
+  font-weight: 700;
+}
+
+.expand-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 5px;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+  color: #6c757d;
+}
+
+.expand-btn:hover {
+  background: rgba(52, 152, 219, 0.1);
+  color: #3498db;
+}
+
+.expand-icon {
+  width: 20px;
+  height: 20px;
+  transition: transform 0.3s ease;
+}
+
+.expand-icon.rotated {
+  transform: rotate(180deg);
+}
+
+.converter-body {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid #e1e5e9;
+  animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.currency-selector {
+  margin-bottom: 20px;
+}
+
+.currency-selector label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: #2c3e50;
+  font-size: 14px;
+}
+
+.currency-selector select {
+  width: 100%;
+  padding: 12px 16px;
+  border: 2px solid #e1e5e9;
+  border-radius: 8px;
+  background: white;
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+
+.currency-selector select:focus {
+  outline: none;
+  border-color: #3498db;
+  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+}
+
+.conversion-result {
+  background: #f8f9fa;
+  border-radius: 8px;
+  padding: 15px;
+  margin-bottom: 15px;
+  min-height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.loading-conversion {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #6c757d;
+}
+
+.loading-conversion span {
+  font-size: 14px;
+}
+
+.converted-amount {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.result-label {
+  font-size: 12px;
+  color: #6c757d;
+  font-weight: 500;
+}
+
+.result-value {
+  font-size: 20px;
+  color: #27ae60;
+  font-weight: 700;
+}
+
+.conversion-error {
+  color: #e74c3c;
+  font-size: 14px;
+  text-align: center;
+}
+
+.conversion-note {
+  text-align: center;
+  margin-top: 10px;
+}
+
+.conversion-note small {
+  color: #95a5a6;
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+/* Simple Conversion (non-expandable) */
+.simple-conversion {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid #e1e5e9;
+}
+
+.conversion-arrow {
+  color: #95a5a6;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.converted-value {
+  color: #27ae60;
+  font-weight: 700;
+  font-size: 15px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .currency-converter {
+    padding: 12px;
+  }
+
+  .converter-header {
+    gap: 10px;
+  }
+
+  .amount-value {
+    font-size: 14px;
+  }
+
+  .result-value {
+    font-size: 18px;
+  }
+
+  .currency-selector select {
+    padding: 10px 12px;
+    font-size: 16px; /* Prevent zoom on iOS */
+  }
+}
+
+/* Dark theme support */
+@media (prefers-color-scheme: dark) {
+  .currency-converter {
+    background: #2c3e50;
+    border-color: #34495e;
+  }
+
+  .currency-converter.expanded {
+    background: #34495e;
+  }
+
+  .converter-body {
+    border-top-color: #495057;
+  }
+
+  .amount-value,
+  .currency-selector label {
+    color: #ecf0f1;
+  }
+
+  .amount-label {
+    color: #bdc3c7;
+  }
+
+  .currency-selector select {
+    background: #2c3e50;
+    border-color: #495057;
+    color: #ecf0f1;
+  }
+
+  .conversion-result {
+    background: #2c3e50;
+  }
+
+  .conversion-note small {
+    color: #7f8c8d;
+  }
+}

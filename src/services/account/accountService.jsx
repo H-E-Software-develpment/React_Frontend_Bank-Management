@@ -35,10 +35,13 @@ export const closeAccount = async (aid) => {
   }
 };
 
-// ALL ROLES - Find accounts with filters
-export const findAccounts = async (filterData) => {
+// ALL ROLES - Find accounts with filters (supports currency conversion)
+export const findAccounts = async (filterData, currency = "GTQ") => {
   try {
-    const response = await api.post("/account/findAccounts", filterData);
+    const params = currency !== "GTQ" ? { currency } : {};
+    const response = await api.post("/account/findAccounts", filterData, {
+      params,
+    });
     return response.data;
   } catch (error) {
     throw new Error(error.response?.data?.message || "Error finding accounts");

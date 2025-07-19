@@ -14,6 +14,7 @@ const ProductManager = ({ userRole }) => {
   const [toast, setToast] = useState(null);
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [editingProduct, setEditingProduct] = useState(null);
+  const [expandedProduct, setExpandedProduct] = useState(null);
   const [filters, setFilters] = useState({
     name: "",
     category: "",
@@ -103,6 +104,16 @@ const ProductManager = ({ userRole }) => {
         ? "Producto actualizado exitosamente"
         : "Producto creado exitosamente",
     });
+  };
+
+  const handleCardClick = (product, e) => {
+    // Prevent card expansion when clicking action buttons
+    if (e.target.closest(".product-actions")) return;
+    setExpandedProduct(product);
+  };
+
+  const handleCloseExpanded = () => {
+    setExpandedProduct(null);
   };
 
   const formatCategory = (category) => {
@@ -218,7 +229,11 @@ const ProductManager = ({ userRole }) => {
 
           <div className="products-grid">
             {products.map((product) => (
-              <div key={product.pid} className="product-card">
+              <div
+                key={product.pid}
+                className="product-card clickable"
+                onClick={(e) => handleCardClick(product, e)}
+              >
                 <div className="product-header">
                   <h3 className="product-name">{product.name}</h3>
                   <span
@@ -236,21 +251,29 @@ const ProductManager = ({ userRole }) => {
                   <div className="product-actions">
                     <button
                       className="edit-btn"
-                      onClick={() => handleEditProduct(product)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleEditProduct(product);
+                      }}
                       title="Editar producto"
                     >
                       <svg viewBox="0 0 24 24" fill="currentColor">
                         <path d="M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z" />
                       </svg>
+                      Editar
                     </button>
                     <button
                       className="delete-btn"
-                      onClick={() => handleDeleteProduct(product.pid)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleDeleteProduct(product.pid);
+                      }}
                       title="Eliminar producto"
                     >
                       <svg viewBox="0 0 24 24" fill="currentColor">
                         <path d="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z" />
                       </svg>
+                      Eliminar
                     </button>
                   </div>
                 )}
@@ -293,6 +316,105 @@ const ProductManager = ({ userRole }) => {
             setEditingProduct(null);
           }}
         />
+      )}
+
+      {expandedProduct && (
+        <div className="expanded-overlay" onClick={handleCloseExpanded}>
+          <div className="expanded-modal" onClick={(e) => e.stopPropagation()}>
+            <button className="close-btn" onClick={handleCloseExpanded}>
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z" />
+              </svg>
+            </button>
+
+            <div className="expanded-content">
+              <div className="expanded-header">
+                <h2 className="expanded-title">{expandedProduct.name}</h2>
+                <span
+                  className={`expanded-category ${expandedProduct.category.toLowerCase()}`}
+                >
+                  {formatCategory(expandedProduct.category)}
+                </span>
+              </div>
+
+              <div className="expanded-body">
+                <div className="expanded-section">
+                  <h3>Descripción</h3>
+                  <p className="expanded-description">
+                    {expandedProduct.description}
+                  </p>
+                </div>
+
+                <div className="expanded-section">
+                  <h3>Información del Producto</h3>
+                  <div className="expanded-details">
+                    <div className="detail-row">
+                      <span className="detail-label">ID del Producto:</span>
+                      <span className="detail-value">
+                        {expandedProduct.pid}
+                      </span>
+                    </div>
+                    <div className="detail-row">
+                      <span className="detail-label">Categoría:</span>
+                      <span className="detail-value">
+                        {formatCategory(expandedProduct.category)}
+                      </span>
+                    </div>
+                    <div className="detail-row">
+                      <span className="detail-label">Fecha de Creación:</span>
+                      <span className="detail-value">
+                        {new Date(expandedProduct.createdAt).toLocaleString(
+                          "es-GT",
+                        )}
+                      </span>
+                    </div>
+                    {expandedProduct.updatedAt && (
+                      <div className="detail-row">
+                        <span className="detail-label">
+                          Última Actualización:
+                        </span>
+                        <span className="detail-value">
+                          {new Date(expandedProduct.updatedAt).toLocaleString(
+                            "es-GT",
+                          )}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              {userRole === "ADMINISTRATOR" && (
+                <div className="expanded-actions">
+                  <button
+                    className="edit-btn-expanded"
+                    onClick={() => {
+                      handleEditProduct(expandedProduct);
+                      setExpandedProduct(null);
+                    }}
+                  >
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z" />
+                    </svg>
+                    Editar Producto
+                  </button>
+                  <button
+                    className="delete-btn-expanded"
+                    onClick={() => {
+                      handleDeleteProduct(expandedProduct.pid);
+                      setExpandedProduct(null);
+                    }}
+                  >
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z" />
+                    </svg>
+                    Eliminar Producto
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

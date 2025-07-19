@@ -203,9 +203,19 @@
   position: relative;
 }
 
+.product-card.clickable {
+  cursor: pointer;
+}
+
 .product-card:hover {
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
   transform: translateY(-2px);
+}
+
+.product-card.clickable:hover {
+  box-shadow: 0 8px 25px rgba(52, 152, 219, 0.15);
+  transform: translateY(-3px);
+  border-color: #3498db;
 }
 
 .product-header {
@@ -272,8 +282,6 @@
 
 .edit-btn,
 .delete-btn {
-  width: 40px;
-  height: 40px;
   border: none;
   border-radius: 8px;
   cursor: pointer;
@@ -281,6 +289,10 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 6px;
+  padding: 8px 12px;
+  font-size: 13px;
+  font-weight: 600;
 }
 
 .edit-btn {
@@ -553,5 +565,233 @@
   .cancel-btn {
     width: 100%;
     min-width: auto;
+  }
+}
+
+/* Expanded Product Modal */
+.expanded-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1500;
+  padding: 20px;
+  backdrop-filter: blur(4px);
+}
+
+.expanded-modal {
+  background: white;
+  border-radius: 16px;
+  max-width: 700px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+  animation: expandIn 0.3s ease-out;
+}
+
+@keyframes expandIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9) translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.close-btn {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: rgba(108, 117, 125, 0.1);
+  border: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  z-index: 10;
+}
+
+.close-btn:hover {
+  background: rgba(231, 76, 60, 0.1);
+  color: #e74c3c;
+}
+
+.close-btn svg {
+  width: 20px;
+  height: 20px;
+}
+
+.expanded-content {
+  padding: 40px;
+}
+
+.expanded-header {
+  text-align: center;
+  margin-bottom: 30px;
+  padding-bottom: 20px;
+  border-bottom: 2px solid #e1e5e9;
+}
+
+.expanded-title {
+  color: #2c3e50;
+  margin: 0 0 15px 0;
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.expanded-category {
+  padding: 8px 16px;
+  border-radius: 25px;
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: uppercase;
+  display: inline-block;
+}
+
+.expanded-section {
+  margin-bottom: 30px;
+}
+
+.expanded-section h3 {
+  color: #2c3e50;
+  margin: 0 0 15px 0;
+  font-size: 20px;
+  font-weight: 600;
+  border-bottom: 2px solid #3498db;
+  padding-bottom: 8px;
+  display: inline-block;
+}
+
+.expanded-description {
+  color: #6c757d;
+  font-size: 16px;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.expanded-details {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid #f8f9fa;
+}
+
+.detail-label {
+  font-weight: 600;
+  color: #2c3e50;
+  font-size: 15px;
+}
+
+.detail-value {
+  color: #6c757d;
+  font-size: 15px;
+  text-align: right;
+}
+
+.expanded-actions {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  padding-top: 30px;
+  border-top: 2px solid #e1e5e9;
+}
+
+.edit-btn-expanded,
+.delete-btn-expanded {
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 25px;
+  font-size: 16px;
+  font-weight: 600;
+  min-width: 180px;
+  justify-content: center;
+}
+
+.edit-btn-expanded {
+  background: linear-gradient(135deg, #f39c12, #e67e22);
+  color: white;
+}
+
+.edit-btn-expanded:hover {
+  background: linear-gradient(135deg, #e67e22, #d35400);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(243, 156, 18, 0.3);
+}
+
+.delete-btn-expanded {
+  background: linear-gradient(135deg, #e74c3c, #c0392b);
+  color: white;
+}
+
+.delete-btn-expanded:hover {
+  background: linear-gradient(135deg, #c0392b, #a93226);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(231, 76, 60, 0.3);
+}
+
+.edit-btn-expanded svg,
+.delete-btn-expanded svg {
+  width: 18px;
+  height: 18px;
+}
+
+@media (max-width: 768px) {
+  .expanded-modal {
+    margin: 10px;
+    max-height: 95vh;
+  }
+
+  .expanded-content {
+    padding: 25px;
+  }
+
+  .expanded-title {
+    font-size: 24px;
+  }
+
+  .expanded-actions {
+    flex-direction: column;
+  }
+
+  .edit-btn-expanded,
+  .delete-btn-expanded {
+    width: 100%;
+    min-width: auto;
+  }
+
+  .detail-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+
+  .detail-value {
+    text-align: left;
   }
 }
