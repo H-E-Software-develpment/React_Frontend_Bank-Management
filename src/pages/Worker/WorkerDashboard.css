@@ -89,6 +89,51 @@
   transform: translateY(-2px);
 }
 
+.dashboard-nav {
+  background: white;
+  border-bottom: 1px solid #e5e7eb;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.nav-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  display: flex;
+  gap: 0;
+}
+
+.nav-btn {
+  background: none;
+  border: none;
+  padding: 1rem 1.5rem;
+  color: #6b7280;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border-bottom: 3px solid transparent;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.nav-btn svg {
+  width: 18px;
+  height: 18px;
+}
+
+.nav-btn:hover {
+  color: #374151;
+  background: #f9fafb;
+}
+
+.nav-btn.active {
+  color: #8b5cf6;
+  border-bottom-color: #8b5cf6;
+  background: #faf5ff;
+}
+
 .dashboard-main {
   max-width: 1200px;
   margin: 0 auto;

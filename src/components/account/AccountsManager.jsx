@@ -71,7 +71,7 @@ const AccountsManager = () => {
   };
 
   const formatAccountType = (type) => {
-    return type === "CHECKING" ? "Corriente" : "Ahorros";
+    return type === "CHECKING" ? "Monetaria" : "Ahorros";
   };
 
   const formatBalance = (balance) => {

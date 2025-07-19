@@ -5,6 +5,8 @@ import { logout } from "../../services/auth/authService";
 import LoadingSpinner from "../../components/common/LoadingSpinner";
 import Toast from "../../components/common/Toast";
 import AccountsManager from "../../components/account/AccountsManager";
+import TransferForm from "../../components/movement/TransferForm";
+import MovementHistory from "../../components/movement/MovementHistory";
 import "./UserDashboard.css";
 
 const UserDashboard = () => {
@@ -13,6 +15,7 @@ const UserDashboard = () => {
   const [loading, setLoading] = useState(true);
   const [toast, setToast] = useState(null);
   const [activeView, setActiveView] = useState("dashboard");
+  const [showTransferForm, setShowTransferForm] = useState(false);
 
   const user = JSON.parse(localStorage.getItem("user"));
 
@@ -106,11 +109,23 @@ const UserDashboard = () => {
             </svg>
             Mis Cuentas
           </button>
-          <button className={`nav-btn disabled`} disabled>
+          <button
+            className={`nav-btn ${activeView === "transactions" ? "active" : ""}`}
+            onClick={() => handleViewChange("transactions")}
+          >
             <svg viewBox="0 0 24 24" fill="currentColor">
               <path d="M3,6V18H21V6H3M12,9A3,3 0 0,1 15,12A3,3 0 0,1 12,15A3,3 0 0,1 9,12A3,3 0 0,1 12,9Z" />
             </svg>
             Transacciones
+          </button>
+          <button
+            className={`nav-btn ${activeView === "transfer" ? "active" : ""}`}
+            onClick={() => handleViewChange("transfer")}
+          >
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path d="M2,10V8L3,9L4,8V10L3,11L2,10M5,8V10L6,11L7,10V8L6,7L5,8M8.5,10H10.5C11,10 11.5,9.5 11.5,9C11.5,8.5 11,8 10.5,8H9.5C9,8 8.5,7.5 8.5,7C8.5,6.5 9,6 9.5,6H11.5V4.5H9.5C8.5,4.5 7.5,5.5 7.5,6.5V7C7.5,8 8.5,9 9.5,9H10.5C11,9 11.5,9.5 11.5,10C11.5,10.5 11,11 10.5,11H8.5V12.5H10.5C11.5,12.5 12.5,11.5 12.5,10.5V10C12.5,9 11.5,8 10.5,8H9.5C9,8 8.5,7.5 8.5,7Z" />
+            </svg>
+            Transferencias
           </button>
         </div>
       </nav>
@@ -154,14 +169,30 @@ const UserDashboard = () => {
                     <p>Gestiona tus cuentas bancarias</p>
                   </div>
 
-                  <div className="action-card disabled">
+                  <div
+                    className="action-card"
+                    onClick={() => handleViewChange("transactions")}
+                  >
                     <div className="action-icon">
                       <svg viewBox="0 0 24 24" fill="currentColor">
                         <path d="M3,6V18H21V6H3M12,9A3,3 0 0,1 15,12A3,3 0 0,1 12,15A3,3 0 0,1 9,12A3,3 0 0,1 12,9Z" />
                       </svg>
                     </div>
                     <h3>Transacciones</h3>
-                    <p>Consulta tu historial de transacciones (Próximamente)</p>
+                    <p>Consulta tu historial de transacciones</p>
+                  </div>
+
+                  <div
+                    className="action-card"
+                    onClick={() => handleViewChange("transfer")}
+                  >
+                    <div className="action-icon">
+                      <svg viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M2,10V8L3,9L4,8V10L3,11L2,10M5,8V10L6,11L7,10V8L6,7L5,8M8.5,10H10.5C11,10 11.5,9.5 11.5,9C11.5,8.5 11,8 10.5,8H9.5C9,8 8.5,7.5 8.5,7C8.5,6.5 9,6 9.5,6H11.5V4.5H9.5C8.5,4.5 7.5,5.5 7.5,6.5V7C7.5,8 8.5,9 9.5,9H10.5C11,9 11.5,9.5 11.5,10C11.5,10.5 11,11 10.5,11H8.5V12.5H10.5C11.5,12.5 12.5,11.5 12.5,10.5V10C12.5,9 11.5,8 10.5,8H9.5C9,8 8.5,7.5 8.5,7Z" />
+                      </svg>
+                    </div>
+                    <h3>Transferencias</h3>
+                    <p>Realiza transferencias entre cuentas</p>
                   </div>
                 </div>
               </section>
@@ -171,6 +202,27 @@ const UserDashboard = () => {
           {activeView === "accounts" && (
             <section className="accounts-section">
               <AccountsManager />
+            </section>
+          )}
+
+          {activeView === "transactions" && (
+            <section className="transactions-section">
+              <MovementHistory userRole="CLIENT" />
+            </section>
+          )}
+
+          {activeView === "transfer" && (
+            <section className="transfer-section">
+              <TransferForm
+                onSuccess={() => {
+                  setToast({
+                    type: "success",
+                    message: "Transferencia completada exitosamente",
+                  });
+                  handleViewChange("transactions");
+                }}
+                onCancel={() => handleViewChange("dashboard")}
+              />
             </section>
           )}
         </div>

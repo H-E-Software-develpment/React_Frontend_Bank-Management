@@ -5,6 +5,9 @@ import { logout } from "../../services/auth/authService";
 import LoadingSpinner from "../../components/common/LoadingSpinner";
 import Toast from "../../components/common/Toast";
 import CreateUserOptions from "../../components/account/CreateUserOptions";
+import DepositForm from "../../components/movement/DepositForm";
+import MovementHistory from "../../components/movement/MovementHistory";
+import AccountsByMovements from "../../components/movement/AccountsByMovements";
 import "./AdminDashboard.css";
 
 const AdminDashboard = () => {
@@ -23,6 +26,7 @@ const AdminDashboard = () => {
     from: 0,
   });
   const [showCreateOptions, setShowCreateOptions] = useState(false);
+  const [selectedCreateOption, setSelectedCreateOption] = useState(null);
 
   const user = JSON.parse(localStorage.getItem("user"));
 
@@ -135,12 +139,14 @@ const AdminDashboard = () => {
     navigate("/edituser");
   };
 
-  const handleShowCreateOptions = () => {
+  const handleShowCreateOptions = (option = null) => {
+    setSelectedCreateOption(option);
     setShowCreateOptions(true);
   };
 
   const handleCloseCreateOptions = () => {
     setShowCreateOptions(false);
+    setSelectedCreateOption(null);
     // Refresh the users list after creating
     if (activeView === "users") {
       loadAllUsersExcludingAdmins();
@@ -222,6 +228,33 @@ const AdminDashboard = () => {
               <path d="M16,4C18.2,4 20,5.8 20,8C20,10.2 18.2,12 16,12C13.8,12 12,10.2 12,8C12,5.8 13.8,4 16,4M16,14C20.4,14 24,15.8 24,18V20H8V18C8,15.8 11.6,14 16,14M12.5,11.5C15.1,11.5 17.5,12.8 17.5,15V16.5H6.5V15C6.5,12.8 8.9,11.5 12.5,11.5M8.5,4C10.7,4 12.5,5.8 12.5,8C12.5,10.2 10.7,12 8.5,12C6.3,12 4.5,10.2 4.5,8C4.5,5.8 6.3,4 8.5,4Z" />
             </svg>
             Gestionar Usuarios
+          </button>
+          <button
+            className={`nav-btn ${activeView === "deposits" ? "active" : ""}`}
+            onClick={() => setActiveView("deposits")}
+          >
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path d="M11,9H13V7H11M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M11,17H13V11H11V17Z" />
+            </svg>
+            Realizar Depósitos
+          </button>
+          <button
+            className={`nav-btn ${activeView === "movements" ? "active" : ""}`}
+            onClick={() => setActiveView("movements")}
+          >
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path d="M3,6V18H21V6H3M12,9A3,3 0 0,1 15,12A3,3 0 0,1 12,15A3,3 0 0,1 9,12A3,3 0 0,1 12,9Z" />
+            </svg>
+            Historial de Movimientos
+          </button>
+          <button
+            className={`nav-btn ${activeView === "reports" ? "active" : ""}`}
+            onClick={() => setActiveView("reports")}
+          >
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path d="M19,3H5C3.9,3 3,3.9 3,5V19C3,20.1 3.9,21 5,21H19C20.1,21 21,20.1 21,19V5C21,3.9 20.1,3 19,3M13,9H18V7H13V9M13,13H18V11H13V13M13,17H18V15H13V17M11,15H6V13H11V15M11,11H6V9H11V11M11,7H6V5H11V7Z" />
+            </svg>
+            Reportes de Cuentas
           </button>
         </div>
       </nav>
@@ -309,7 +342,7 @@ const AdminDashboard = () => {
                 <div className="create-options-grid">
                   <div
                     className="create-option-card"
-                    onClick={handleShowCreateOptions}
+                    onClick={() => handleShowCreateOptions("create-user")}
                   >
                     <div className="option-icon">
                       <svg viewBox="0 0 24 24" fill="currentColor">
@@ -322,7 +355,9 @@ const AdminDashboard = () => {
 
                   <div
                     className="create-option-card"
-                    onClick={handleShowCreateOptions}
+                    onClick={() =>
+                      handleShowCreateOptions("create-user-with-account")
+                    }
                   >
                     <div className="option-icon">
                       <svg viewBox="0 0 24 24" fill="currentColor">
@@ -335,7 +370,7 @@ const AdminDashboard = () => {
 
                   <div
                     className="create-option-card"
-                    onClick={handleShowCreateOptions}
+                    onClick={() => handleShowCreateOptions("create-account")}
                   >
                     <div className="option-icon">
                       <svg viewBox="0 0 24 24" fill="currentColor">
@@ -470,6 +505,33 @@ const AdminDashboard = () => {
               )}
             </section>
           )}
+
+          {activeView === "deposits" && (
+            <section className="deposits-section">
+              <DepositForm
+                onSuccess={() => {
+                  setToast({
+                    type: "success",
+                    message: "Depósito realizado exitosamente",
+                  });
+                  setActiveView("movements");
+                }}
+                onCancel={() => setActiveView("overview")}
+              />
+            </section>
+          )}
+
+          {activeView === "movements" && (
+            <section className="movements-section">
+              <MovementHistory userRole="ADMINISTRATOR" />
+            </section>
+          )}
+
+          {activeView === "reports" && (
+            <section className="reports-section">
+              <AccountsByMovements />
+            </section>
+          )}
         </div>
       </main>
 
@@ -477,6 +539,7 @@ const AdminDashboard = () => {
         <CreateUserOptions
           userRole="ADMINISTRATOR"
           onClose={handleCloseCreateOptions}
+          initialOption={selectedCreateOption}
         />
       )}
     </div>

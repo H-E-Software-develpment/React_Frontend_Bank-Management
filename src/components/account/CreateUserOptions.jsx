@@ -4,8 +4,8 @@ import CreateUserWithAccountForm from "./CreateUserWithAccountForm";
 import CreateAccountForm from "./CreateAccountForm";
 import "./CreateUserOptions.css";
 
-const CreateUserOptions = ({ userRole, onClose }) => {
-  const [selectedOption, setSelectedOption] = useState(null);
+const CreateUserOptions = ({ userRole, onClose, initialOption = null }) => {
+  const [selectedOption, setSelectedOption] = useState(initialOption);
 
   const options = [
     {

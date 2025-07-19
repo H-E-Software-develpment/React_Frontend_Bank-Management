@@ -269,7 +269,7 @@ const CreateUserWithAccountForm = ({ userRole, onSuccess }) => {
               onChange={handleInputChange}
               required
             >
-              <option value="CHECKING">Corriente</option>
+              <option value="CHECKING">Monetaria</option>
               <option value="SAVINGS">Ahorros</option>
             </select>
           </div>

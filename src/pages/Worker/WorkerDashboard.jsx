@@ -20,6 +20,7 @@ const WorkerDashboard = () => {
     from: 0,
   });
   const [showCreateOptions, setShowCreateOptions] = useState(false);
+  const [selectedCreateOption, setSelectedCreateOption] = useState(null);
 
   const user = JSON.parse(localStorage.getItem("user"));
 
@@ -85,12 +86,14 @@ const WorkerDashboard = () => {
     loadUsers({});
   };
 
-  const handleShowCreateOptions = () => {
+  const handleShowCreateOptions = (option = null) => {
+    setSelectedCreateOption(option);
     setShowCreateOptions(true);
   };
 
   const handleCloseCreateOptions = () => {
     setShowCreateOptions(false);
+    setSelectedCreateOption(null);
     // Refresh the users list after creating
     loadUsers();
   };
@@ -129,170 +132,244 @@ const WorkerDashboard = () => {
         </div>
       </header>
 
+      <nav className="dashboard-nav">
+        <div className="nav-content">
+          <button
+            className={`nav-btn ${activeView === "clients" ? "active" : ""}`}
+            onClick={() => handleViewChange("clients")}
+          >
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path d="M16,4C18.2,4 20,5.8 20,8C20,10.2 18.2,12 16,12C13.8,12 12,10.2 12,8C12,5.8 13.8,4 16,4M16,14C20.4,14 24,15.8 24,18V20H8V18C8,15.8 11.6,14 16,14M12.5,11.5C15.1,11.5 17.5,12.8 17.5,15V16.5H6.5V15C6.5,12.8 8.9,11.5 12.5,11.5M8.5,4C10.7,4 12.5,5.8 12.5,8C12.5,10.2 10.7,12 8.5,12C6.3,12 4.5,10.2 4.5,8C4.5,5.8 6.3,4 8.5,4Z" />
+            </svg>
+            Gestión de Clientes
+          </button>
+          <button
+            className={`nav-btn ${activeView === "deposits" ? "active" : ""}`}
+            onClick={() => handleViewChange("deposits")}
+          >
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path d="M11,9H13V7H11M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M11,17H13V11H11V17Z" />
+            </svg>
+            Realizar Depósitos
+          </button>
+          <button
+            className={`nav-btn ${activeView === "movements" ? "active" : ""}`}
+            onClick={() => handleViewChange("movements")}
+          >
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path d="M3,6V18H21V6H3M12,9A3,3 0 0,1 15,12A3,3 0 0,1 12,15A3,3 0 0,1 9,12A3,3 0 0,1 12,9Z" />
+            </svg>
+            Historial de Movimientos
+          </button>
+          <button
+            className={`nav-btn ${activeView === "reports" ? "active" : ""}`}
+            onClick={() => handleViewChange("reports")}
+          >
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path d="M19,3H5C3.9,3 3,3.9 3,5V19C3,20.1 3.9,21 5,21H19C20.1,21 21,20.1 21,19V5C21,3.9 20.1,3 19,3M13,9H18V7H13V9M13,13H18V11H13V13M13,17H18V15H13V17M11,15H6V13H11V15M11,11H6V9H11V11M11,7H6V5H11V7Z" />
+            </svg>
+            Reportes de Cuentas
+          </button>
+        </div>
+      </nav>
+
       <main className="dashboard-main">
         <div className="dashboard-content">
-          <section className="create-section">
-            <h2>Crear Clientes</h2>
-            <div className="create-options-grid">
-              <div
-                className="create-option-card"
-                onClick={handleShowCreateOptions}
-              >
-                <div className="option-icon">
-                  <svg viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M15,14C12.33,14 7,15.33 7,18V20H23V18C23,15.33 17.67,14 15,14M6,10V7H4V10H1V12H4V15H6V12H9V10M15,12A4,4 0 0,0 19,8A4,4 0 0,0 15,4A4,4 0 0,0 11,8A4,4 0 0,0 15,12Z" />
-                  </svg>
-                </div>
-                <h3>Crear Cliente</h3>
-                <p>Cliente sin cuenta bancaria</p>
-              </div>
-
-              <div
-                className="create-option-card"
-                onClick={handleShowCreateOptions}
-              >
-                <div className="option-icon">
-                  <svg viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12,15C12.81,15 13.5,14.7 14.11,14.11C14.7,13.5 15,12.81 15,12C15,11.19 14.7,10.5 14.11,9.89C13.5,9.3 12.81,9 12,9C11.19,9 10.5,9.3 9.89,9.89C9.3,10.5 9,11.19 9,12C9,12.81 9.3,13.5 9.89,14.11C10.5,14.7 11.19,15 12,15M12,2C14.21,2 16.21,2.81 17.71,4.29C19.19,5.79 20,7.79 20,10C20,12.21 19.19,14.21 17.71,15.71C16.21,17.19 14.21,18 12,18C9.79,18 7.79,17.19 6.29,15.71C4.81,14.21 4,12.21 4,10C4,7.79 4.81,5.79 6.29,4.29C7.79,2.81 9.79,2 12,2Z" />
-                  </svg>
-                </div>
-                <h3>Cliente con Cuenta</h3>
-                <p>Cliente con cuenta bancaria</p>
-              </div>
-
-              <div
-                className="create-option-card"
-                onClick={handleShowCreateOptions}
-              >
-                <div className="option-icon">
-                  <svg viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M11,9H13V7H11M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M11,17H13V11H11V17Z" />
-                  </svg>
-                </div>
-                <h3>Crear Cuenta</h3>
-                <p>Cuenta para cliente existente</p>
-              </div>
-            </div>
-          </section>
-
-          <section className="filters-section">
-            <h2>Buscar Clientes</h2>
-            <form className="filters-form" onSubmit={handleSearch}>
-              <div className="filter-row">
-                <div className="filter-group">
-                  <label htmlFor="uid">ID Usuario:</label>
-                  <input
-                    type="text"
-                    id="uid"
-                    name="uid"
-                    value={filters.uid}
-                    onChange={handleFilterChange}
-                    placeholder="Buscar por ID..."
-                  />
-                </div>
-                <div className="filter-group">
-                  <label htmlFor="username">Nombre de Usuario:</label>
-                  <input
-                    type="text"
-                    id="username"
-                    name="username"
-                    value={filters.username}
-                    onChange={handleFilterChange}
-                    placeholder="Buscar por usuario..."
-                  />
-                </div>
-              </div>
-              <div className="filter-row">
-                <div className="filter-group">
-                  <label htmlFor="name">Nombre:</label>
-                  <input
-                    type="text"
-                    id="name"
-                    name="name"
-                    value={filters.name}
-                    onChange={handleFilterChange}
-                    placeholder="Buscar por nombre..."
-                  />
-                </div>
-                <div className="filter-group">
-                  <label htmlFor="limit">Límite:</label>
-                  <select
-                    id="limit"
-                    name="limit"
-                    value={filters.limit}
-                    onChange={handleFilterChange}
+          {activeView === "clients" && (
+            <>
+              <section className="create-section">
+                <h2>Crear Clientes</h2>
+                <div className="create-options-grid">
+                  <div
+                    className="create-option-card"
+                    onClick={() => handleShowCreateOptions("create-user")}
                   >
-                    <option value={5}>5</option>
-                    <option value={10}>10</option>
-                    <option value={20}>20</option>
-                    <option value={50}>50</option>
-                  </select>
-                </div>
-              </div>
-              <div className="filter-actions">
-                <button type="submit" className="search-btn">
-                  Buscar
-                </button>
-                <button
-                  type="button"
-                  className="clear-btn"
-                  onClick={clearFilters}
-                >
-                  Limpiar
-                </button>
-              </div>
-            </form>
-          </section>
-
-          <section className="users-section">
-            <h2>Lista de Clientes</h2>
-            {loading ? (
-              <LoadingSpinner />
-            ) : (
-              <div className="users-grid">
-                {users.length > 0 ? (
-                  users.map((client) => (
-                    <div
-                      key={client.uid}
-                      className="user-card clickable-card"
-                      onClick={() => goToEditUser(client.uid)}
-                      style={{ cursor: "pointer" }}
-                    >
-                      <div className="user-card-header">
-                        <h3>{client.name}</h3>
-                        <span className="user-role">{client.role}</span>
-                      </div>
-                      <div className="user-card-body">
-                        <p>
-                          <strong>Usuario:</strong> {client.username}
-                        </p>
-                        <p>
-                          <strong>Email:</strong> {client.email}
-                        </p>
-                        <p>
-                          <strong>Teléfono:</strong> {client.phone}
-                        </p>
-                        <p>
-                          <strong>Trabajo:</strong> {client.job}
-                        </p>
-                        <p>
-                          <strong>Ingresos:</strong> Q
-                          {client.income?.toLocaleString()}
-                        </p>
-                      </div>
-                      <div className="user-card-footer">
-                        <span className="user-id">ID: {client.uid}</span>
-                      </div>
+                    <div className="option-icon">
+                      <svg viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M15,14C12.33,14 7,15.33 7,18V20H23V18C23,15.33 17.67,14 15,14M6,10V7H4V10H1V12H4V15H6V12H9V10M15,12A4,4 0 0,0 19,8A4,4 0 0,0 15,4A4,4 0 0,0 11,8A4,4 0 0,0 15,12Z" />
+                      </svg>
                     </div>
-                  ))
+                    <h3>Crear Cliente</h3>
+                    <p>Cliente sin cuenta bancaria</p>
+                  </div>
+
+                  <div
+                    className="create-option-card"
+                    onClick={() =>
+                      handleShowCreateOptions("create-user-with-account")
+                    }
+                  >
+                    <div className="option-icon">
+                      <svg viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12,15C12.81,15 13.5,14.7 14.11,14.11C14.7,13.5 15,12.81 15,12C15,11.19 14.7,10.5 14.11,9.89C13.5,9.3 12.81,9 12,9C11.19,9 10.5,9.3 9.89,9.89C9.3,10.5 9,11.19 9,12C9,12.81 9.3,13.5 9.89,14.11C10.5,14.7 11.19,15 12,15M12,2C14.21,2 16.21,2.81 17.71,4.29C19.19,5.79 20,7.79 20,10C20,12.21 19.19,14.21 17.71,15.71C16.21,17.19 14.21,18 12,18C9.79,18 7.79,17.19 6.29,15.71C4.81,14.21 4,12.21 4,10C4,7.79 4.81,5.79 6.29,4.29C7.79,2.81 9.79,2 12,2Z" />
+                      </svg>
+                    </div>
+                    <h3>Cliente con Cuenta</h3>
+                    <p>Cliente con cuenta bancaria</p>
+                  </div>
+
+                  <div
+                    className="create-option-card"
+                    onClick={() => handleShowCreateOptions("create-account")}
+                  >
+                    <div className="option-icon">
+                      <svg viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M11,9H13V7H11M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M11,17H13V11H11V17Z" />
+                      </svg>
+                    </div>
+                    <h3>Crear Cuenta</h3>
+                    <p>Cuenta para cliente existente</p>
+                  </div>
+                </div>
+              </section>
+
+              <section className="filters-section">
+                <h2>Buscar Clientes</h2>
+                <form className="filters-form" onSubmit={handleSearch}>
+                  <div className="filter-row">
+                    <div className="filter-group">
+                      <label htmlFor="uid">ID Usuario:</label>
+                      <input
+                        type="text"
+                        id="uid"
+                        name="uid"
+                        value={filters.uid}
+                        onChange={handleFilterChange}
+                        placeholder="Buscar por ID..."
+                      />
+                    </div>
+                    <div className="filter-group">
+                      <label htmlFor="username">Nombre de Usuario:</label>
+                      <input
+                        type="text"
+                        id="username"
+                        name="username"
+                        value={filters.username}
+                        onChange={handleFilterChange}
+                        placeholder="Buscar por usuario..."
+                      />
+                    </div>
+                  </div>
+                  <div className="filter-row">
+                    <div className="filter-group">
+                      <label htmlFor="name">Nombre:</label>
+                      <input
+                        type="text"
+                        id="name"
+                        name="name"
+                        value={filters.name}
+                        onChange={handleFilterChange}
+                        placeholder="Buscar por nombre..."
+                      />
+                    </div>
+                    <div className="filter-group">
+                      <label htmlFor="limit">Límite:</label>
+                      <select
+                        id="limit"
+                        name="limit"
+                        value={filters.limit}
+                        onChange={handleFilterChange}
+                      >
+                        <option value={5}>5</option>
+                        <option value={10}>10</option>
+                        <option value={20}>20</option>
+                        <option value={50}>50</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div className="filter-actions">
+                    <button type="submit" className="search-btn">
+                      Buscar
+                    </button>
+                    <button
+                      type="button"
+                      className="clear-btn"
+                      onClick={clearFilters}
+                    >
+                      Limpiar
+                    </button>
+                  </div>
+                </form>
+              </section>
+
+              <section className="users-section">
+                <h2>Lista de Clientes</h2>
+                {loading ? (
+                  <LoadingSpinner />
                 ) : (
-                  <div className="no-users">
-                    <p>No se encontraron clientes</p>
+                  <div className="users-grid">
+                    {users.length > 0 ? (
+                      users.map((client) => (
+                        <div
+                          key={client.uid}
+                          className="user-card clickable-card"
+                          onClick={() => goToEditUser(client.uid)}
+                          style={{ cursor: "pointer" }}
+                        >
+                          <div className="user-card-header">
+                            <h3>{client.name}</h3>
+                            <span className="user-role">{client.role}</span>
+                          </div>
+                          <div className="user-card-body">
+                            <p>
+                              <strong>Usuario:</strong> {client.username}
+                            </p>
+                            <p>
+                              <strong>Email:</strong> {client.email}
+                            </p>
+                            <p>
+                              <strong>Teléfono:</strong> {client.phone}
+                            </p>
+                            <p>
+                              <strong>Trabajo:</strong> {client.job}
+                            </p>
+                            <p>
+                              <strong>Ingresos:</strong> Q
+                              {client.income?.toLocaleString()}
+                            </p>
+                          </div>
+                          <div className="user-card-footer">
+                            <span className="user-id">ID: {client.uid}</span>
+                          </div>
+                        </div>
+                      ))
+                    ) : (
+                      <div className="no-users">
+                        <p>No se encontraron clientes</p>
+                      </div>
+                    )}
                   </div>
                 )}
-              </div>
-            )}
-          </section>
+              </section>
+            </>
+          )}
+
+          {activeView === "deposits" && (
+            <section className="deposits-section">
+              <DepositForm
+                onSuccess={() => {
+                  setToast({
+                    type: "success",
+                    message: "Depósito realizado exitosamente",
+                  });
+                  handleViewChange("movements");
+                }}
+                onCancel={() => handleViewChange("clients")}
+              />
+            </section>
+          )}
+
+          {activeView === "movements" && (
+            <section className="movements-section">
+              <MovementHistory userRole="WORKER" />
+            </section>
+          )}
+
+          {activeView === "reports" && (
+            <section className="reports-section">
+              <AccountsByMovements />
+            </section>
+          )}
         </div>
       </main>
 
@@ -300,6 +377,7 @@ const WorkerDashboard = () => {
         <CreateUserOptions
           userRole="WORKER"
           onClose={handleCloseCreateOptions}
+          initialOption={selectedCreateOption}
         />
       )}
     </div>
