@@ -6,6 +6,8 @@ import {
 } from "../../services/account/accountService";
 import LoadingSpinner from "../common/LoadingSpinner";
 import Toast from "../common/Toast";
+import CurrencyConverter from "../common/CurrencyConverter";
+import MovementHistory from "../movement/MovementHistory";
 import "./AccountsManager.css";
 
 const AccountsManager = () => {
@@ -15,6 +17,8 @@ const AccountsManager = () => {
   const [selectedAccount, setSelectedAccount] = useState(null);
   const [showFavoriteForm, setShowFavoriteForm] = useState(false);
   const [favoriteAlias, setFavoriteAlias] = useState("");
+  const [viewTransactionsAccount, setViewTransactionsAccount] = useState(null);
+  const [showTransactions, setShowTransactions] = useState(false);
 
   useEffect(() => {
     loadAccounts();
@@ -68,6 +72,16 @@ const AccountsManager = () => {
     } catch (error) {
       setToast({ type: "error", message: error.message });
     }
+  };
+
+  const handleViewTransactions = (account) => {
+    setViewTransactionsAccount(account);
+    setShowTransactions(true);
+  };
+
+  const handleCloseTransactions = () => {
+    setShowTransactions(false);
+    setViewTransactionsAccount(null);
   };
 
   const formatAccountType = (type) => {
@@ -154,6 +168,11 @@ const AccountsManager = () => {
                   <span className="balance">
                     {formatBalance(account.balance)}
                   </span>
+                  <CurrencyConverter
+                    amount={account.balance}
+                    fromCurrency="GTQ"
+                    showSelector={true}
+                  />
                 </div>
 
                 <div className="account-info">
@@ -175,7 +194,13 @@ const AccountsManager = () => {
               </div>
 
               <div className="account-card-footer">
-                <button className="view-transactions-btn">
+                <button
+                  className="view-transactions-btn"
+                  onClick={() => handleViewTransactions(account)}
+                >
+                  <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M3,6V18H21V6H3M12,9A3,3 0 0,1 15,12A3,3 0 0,1 12,15A3,3 0 0,1 9,12A3,3 0 0,1 12,9Z" />
+                  </svg>
                   Ver Transacciones
                 </button>
               </div>
@@ -233,6 +258,28 @@ const AccountsManager = () => {
               >
                 Agregar a Favoritos
               </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showTransactions && viewTransactionsAccount && (
+        <div className="transactions-modal">
+          <div className="modal-content transactions-content">
+            <div className="modal-header">
+              <h3>Transacciones - Cuenta {viewTransactionsAccount.number}</h3>
+              <button className="close-btn" onClick={handleCloseTransactions}>
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z" />
+                </svg>
+              </button>
+            </div>
+            <div className="modal-body">
+              <MovementHistory
+                userRole="CLIENT"
+                prefilledAccount={viewTransactionsAccount.aid}
+                accountNumber={viewTransactionsAccount.number}
+              />
             </div>
           </div>
         </div>

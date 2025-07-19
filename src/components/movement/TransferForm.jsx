@@ -139,6 +139,11 @@ const TransferForm = ({ onSuccess, onCancel }) => {
             min="0.01"
             step="0.01"
             placeholder="Monto a transferir"
+            style={{
+              MozAppearance: "textfield",
+              WebkitAppearance: "none",
+            }}
+            onWheel={(e) => e.target.blur()}
           />
         </div>
 

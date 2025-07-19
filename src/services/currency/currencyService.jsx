@@ -2,7 +2,7 @@ import axios from "axios";
 
 // Note: In production, the API key should be stored in environment variables
 // For now, we'll use a placeholder that should be replaced with actual implementation
-const API_KEY = process.env.REACT_APP_EXCHANGE_API_KEY || "YOUR_API_KEY_HERE";
+const API_KEY = import.meta.env.VITE_EXCHANGE_API_KEY || "YOUR_API_KEY_HERE";
 const BASE_URL = `https://v6.exchangerate-api.com/v6/${API_KEY}/latest/`;
 
 /**

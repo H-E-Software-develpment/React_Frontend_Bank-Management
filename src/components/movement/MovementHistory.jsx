@@ -8,14 +8,18 @@ import LoadingSpinner from "../common/LoadingSpinner";
 import Toast from "../common/Toast";
 import "./MovementForms.css";
 
-const MovementHistory = ({ userRole }) => {
+const MovementHistory = ({
+  userRole,
+  prefilledAccount = null,
+  accountNumber = null,
+}) => {
   const [loading, setLoading] = useState(false);
   const [toast, setToast] = useState(null);
   const [movements, setMovements] = useState([]);
   const [userAccounts, setUserAccounts] = useState([]);
   const [total, setTotal] = useState(0);
   const [filters, setFilters] = useState({
-    aid: "",
+    aid: prefilledAccount || "",
     type: "",
     date: "",
     worker: "",
@@ -31,6 +35,13 @@ const MovementHistory = ({ userRole }) => {
       loadUserAccounts();
     }
   }, [userRole]);
+
+  useEffect(() => {
+    if (prefilledAccount) {
+      // Auto-load movements for the prefilled account
+      handleSearch({ preventDefault: () => {} });
+    }
+  }, [prefilledAccount]);
 
   const loadUserAccounts = async () => {
     try {
@@ -121,7 +132,11 @@ const MovementHistory = ({ userRole }) => {
 
       <div className="history-header">
         <h2>Historial de Movimientos</h2>
-        <p>Consulta el historial de transacciones bancarias</p>
+        <p>
+          {accountNumber
+            ? `Transacciones de la cuenta ${accountNumber}`
+            : "Consulta el historial de transacciones bancarias"}
+        </p>
       </div>
 
       <form className="filters-form" onSubmit={handleSearch}>
