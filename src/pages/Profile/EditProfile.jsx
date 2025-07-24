@@ -5,6 +5,7 @@ import {
   editUser,
   deleteUser,
 } from "../../services/user/userService";
+import { findAccounts } from "../../services/account/accountService";
 import { logout } from "../../services/auth/authService";
 import LoadingSpinner from "../../components/common/LoadingSpinner";
 import Toast from "../../components/common/Toast";
@@ -15,7 +16,9 @@ const EditProfile = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [users, setUsers] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
+  const [userAccounts, setUserAccounts] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [accountsLoading, setAccountsLoading] = useState(false);
   const [toast, setToast] = useState(null);
   const [editMode, setEditMode] = useState(false);
   const [searchQuery, setSearchQuery] = useState({
@@ -86,6 +89,21 @@ const EditProfile = () => {
     }
   };
 
+  const loadUserAccounts = async (userDpi) => {
+    if (!userDpi) return;
+
+    setAccountsLoading(true);
+    try {
+      const response = await findAccounts({ owner: userDpi });
+      setUserAccounts(response.account || []);
+    } catch (error) {
+      console.error("Error loading user accounts:", error);
+      setUserAccounts([]);
+    } finally {
+      setAccountsLoading(false);
+    }
+  };
+
   const selectUser = (user) => {
     setSelectedUser(user);
     setFormData({
@@ -95,6 +113,13 @@ const EditProfile = () => {
       income: user.income || "",
     });
     setEditMode(false);
+
+    // Load accounts if user is a client
+    if (user.role === "CLIENT") {
+      loadUserAccounts(user.dpi);
+    } else {
+      setUserAccounts([]);
+    }
   };
 
   const canEditUser = (user) => {
@@ -353,6 +378,54 @@ const EditProfile = () => {
                       </span>
                     </div>
                   </div>
+
+                  {selectedUser.role === "CLIENT" && (
+                    <div className="user-accounts-section">
+                      <h3>Cuentas Bancarias</h3>
+                      {accountsLoading ? (
+                        <div className="accounts-loading">
+                          <LoadingSpinner />
+                        </div>
+                      ) : userAccounts.length > 0 ? (
+                        <div className="accounts-grid">
+                          {userAccounts.map((account) => (
+                            <div key={account.number} className="account-card">
+                              <div className="account-header">
+                                <h4>Cuenta {account.number}</h4>
+                                <span className={`account-type ${account.type.toLowerCase()}`}>
+                                  {account.type === "CHECKING" ? "Monetaria" : "Ahorros"}
+                                </span>
+                              </div>
+                              <div className="account-details">
+                                <div className="detail-item">
+                                  <label>Balance:</label>
+                                  <span className="balance">
+                                    Q{account.balance?.toLocaleString()}
+                                  </span>
+                                </div>
+                                <div className="detail-item">
+                                  <label>Estado:</label>
+                                  <span className={`status ${account.closed ? "closed" : "active"}`}>
+                                    {account.closed ? "Cerrada" : "Activa"}
+                                  </span>
+                                </div>
+                                <div className="detail-item">
+                                  <label>Fecha de creación:</label>
+                                  <span>
+                                    {new Date(account.created_at).toLocaleDateString()}
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      ) : (
+                        <div className="no-accounts">
+                          <p>Este cliente no tiene cuentas bancarias</p>
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </div>
               ) : (
                 <form className="edit-form" onSubmit={handleEditSubmit}>

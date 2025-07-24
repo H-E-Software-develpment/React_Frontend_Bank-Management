@@ -5,6 +5,7 @@ import { logout } from "../../services/auth/authService";
 import LoadingSpinner from "../../components/common/LoadingSpinner";
 import Toast from "../../components/common/Toast";
 import AccountsManager from "../../components/account/AccountsManager";
+import FavoriteAccounts from "../../components/account/FavoriteAccounts";
 import TransferForm from "../../components/movement/TransferForm";
 import MovementHistory from "../../components/movement/MovementHistory";
 import "./UserDashboard.css";
@@ -16,6 +17,7 @@ const UserDashboard = () => {
   const [toast, setToast] = useState(null);
   const [activeView, setActiveView] = useState("dashboard");
   const [showTransferForm, setShowTransferForm] = useState(false);
+  const [destinationAccount, setDestinationAccount] = useState("");
 
   const user = JSON.parse(localStorage.getItem("user"));
 
@@ -46,6 +48,11 @@ const UserDashboard = () => {
 
   const handleViewChange = (view) => {
     setActiveView(view);
+  };
+
+  const handleNavigateToTransfer = (accountNumber) => {
+    setDestinationAccount(accountNumber);
+    setActiveView("transfer");
   };
 
   if (loading) {
@@ -119,6 +126,15 @@ const UserDashboard = () => {
             Transacciones
           </button>
           <button
+            className={`nav-btn ${activeView === "favorites" ? "active" : ""}`}
+            onClick={() => handleViewChange("favorites")}
+          >
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12,21.35L10.55,20.03C5.4,15.36 2,12.27 2,8.5C2,5.41 4.42,3 7.5,3C9.24,3 10.91,3.81 12,5.08C13.09,3.81 14.76,3 16.5,3C19.58,3 22,5.41 22,8.5C22,12.27 18.6,15.36 13.45,20.03L12,21.35Z" />
+            </svg>
+            Favoritas
+          </button>
+          <button
             className={`nav-btn ${activeView === "transfer" ? "active" : ""}`}
             onClick={() => handleViewChange("transfer")}
           >
@@ -184,6 +200,19 @@ const UserDashboard = () => {
 
                   <div
                     className="action-card"
+                    onClick={() => handleViewChange("favorites")}
+                  >
+                    <div className="action-icon">
+                      <svg viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12,21.35L10.55,20.03C5.4,15.36 2,12.27 2,8.5C2,5.41 4.42,3 7.5,3C9.24,3 10.91,3.81 12,5.08C13.09,3.81 14.76,3 16.5,3C19.58,3 22,5.41 22,8.5C22,12.27 18.6,15.36 13.45,20.03L12,21.35Z" />
+                      </svg>
+                    </div>
+                    <h3>Cuentas Favoritas</h3>
+                    <p>Gestiona tus cuentas favoritas</p>
+                  </div>
+
+                  <div
+                    className="action-card"
                     onClick={() => handleViewChange("transfer")}
                   >
                     <div className="action-icon">
@@ -205,6 +234,12 @@ const UserDashboard = () => {
             </section>
           )}
 
+          {activeView === "favorites" && (
+            <section className="favorites-section">
+              <FavoriteAccounts onNavigateToTransfer={handleNavigateToTransfer} />
+            </section>
+          )}
+
           {activeView === "transactions" && (
             <section className="transactions-section">
               <MovementHistory userRole="CLIENT" />
@@ -214,14 +249,19 @@ const UserDashboard = () => {
           {activeView === "transfer" && (
             <section className="transfer-section">
               <TransferForm
+                destinationAccount={destinationAccount}
                 onSuccess={() => {
                   setToast({
                     type: "success",
                     message: "Transferencia completada exitosamente",
                   });
+                  setDestinationAccount(""); // Clear destination account
                   handleViewChange("transactions");
                 }}
-                onCancel={() => handleViewChange("dashboard")}
+                onCancel={() => {
+                  setDestinationAccount(""); // Clear destination account
+                  handleViewChange("dashboard");
+                }}
               />
             </section>
           )}

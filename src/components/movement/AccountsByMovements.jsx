@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { getAccountsByMovements } from "../../services/movement/movementService";
 import LoadingSpinner from "../common/LoadingSpinner";
 import Toast from "../common/Toast";
@@ -9,19 +9,40 @@ const AccountsByMovements = () => {
   const [toast, setToast] = useState(null);
   const [accounts, setAccounts] = useState([]);
   const [order, setOrder] = useState("MORE");
+  const [hasLoadedDefault, setHasLoadedDefault] = useState(false);
 
-  const handleSearch = async (e) => {
-    e.preventDefault();
+  useEffect(() => {
+    // Load default results on component mount
+    loadAccountsData("MORE");
+  }, []);
+
+  const loadAccountsData = async (orderType) => {
     setLoading(true);
-
     try {
-      const response = await getAccountsByMovements({ order });
+      const response = await getAccountsByMovements({ order: orderType });
       setAccounts(response.accounts || []);
+      setHasLoadedDefault(true);
     } catch (error) {
       setToast({ type: "error", message: error.message });
       setAccounts([]);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleSearch = async (e) => {
+    e.preventDefault();
+    await loadAccountsData(order);
+  };
+
+  const handleOrderChange = (e) => {
+    const newOrder = e.target.value;
+    setOrder(newOrder);
+
+    // If changing from default "MORE" to "LESS", don't auto-search
+    // User must click search button for "LESS"
+    if (newOrder === "MORE" && !hasLoadedDefault) {
+      loadAccountsData(newOrder);
     }
   };
 
@@ -57,7 +78,7 @@ const AccountsByMovements = () => {
           <select
             id="order"
             value={order}
-            onChange={(e) => setOrder(e.target.value)}
+            onChange={handleOrderChange}
           >
             <option value="MORE">Más movimientos</option>
             <option value="LESS">Menos movimientos</option>
@@ -125,7 +146,7 @@ const AccountsByMovements = () => {
         </div>
       )}
 
-      {accounts.length === 0 && !loading && (
+      {accounts.length === 0 && !loading && hasLoadedDefault && (
         <div className="no-results">
           <div className="no-results-icon">
             <svg viewBox="0 0 24 24" fill="currentColor">
@@ -133,7 +154,7 @@ const AccountsByMovements = () => {
             </svg>
           </div>
           <h3>No hay resultados</h3>
-          <p>Haz clic en "Buscar" para ver las cuentas por actividad</p>
+          <p>No se encontraron cuentas con el filtro seleccionado</p>
         </div>
       )}
     </div>

@@ -1,17 +1,19 @@
 import React, { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import { createTransfer } from "../../services/movement/movementService";
 import { getAccountsForClient } from "../../services/account/accountService";
 import LoadingSpinner from "../common/LoadingSpinner";
 import Toast from "../common/Toast";
 import "./MovementForms.css";
 
-const TransferForm = ({ onSuccess, onCancel }) => {
+const TransferForm = ({ onSuccess, onCancel, destinationAccount = "" }) => {
+  const location = useLocation();
   const [loading, setLoading] = useState(false);
   const [toast, setToast] = useState(null);
   const [userAccounts, setUserAccounts] = useState([]);
   const [formData, setFormData] = useState({
     origin: "",
-    destination: "",
+    destination: destinationAccount || location.state?.destinationAccount || "",
     amount: "",
     description: "",
   });
@@ -115,6 +117,11 @@ const TransferForm = ({ onSuccess, onCancel }) => {
 
         <div className="form-group">
           <label htmlFor="destination">Cuenta de Destino *</label>
+          {(destinationAccount || location.state?.destinationAccount) && (
+            <p className="prefilled-notice">
+              ⭐ Cuenta seleccionada desde favoritos
+            </p>
+          )}
           <input
             type="text"
             id="destination"
@@ -124,6 +131,7 @@ const TransferForm = ({ onSuccess, onCancel }) => {
             required
             placeholder="Número de cuenta destino"
             maxLength="20"
+            className={(destinationAccount || location.state?.destinationAccount) ? "prefilled" : ""}
           />
         </div>
 
