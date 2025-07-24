@@ -38,17 +38,24 @@ const FavoriteAccounts = ({ onNavigateToTransfer }) => {
         return;
       }
 
-      // Get account number mappings from localStorage (workaround for CLIENT restrictions)
+      // Get account mappings and details from localStorage (workaround for CLIENT restrictions)
       const user = JSON.parse(localStorage.getItem("user"));
       const userId = user?._id || user?.uid;
       const localFavoritesKey = `favoriteNumbers_${userId}`;
+      const accountDetailsKey = `favoriteDetails_${userId}`;
       const accountNumberMappings = JSON.parse(localStorage.getItem(localFavoritesKey) || "{}");
+      const accountDetails = JSON.parse(localStorage.getItem(accountDetailsKey) || "{}");
 
       const favoriteAccountsDetails = [];
 
       for (const favorite of userFavorites) {
-        // Try to get account number from our local mapping first
         let accountNumber = accountNumberMappings[favorite.account];
+        let ownerName = accountDetails[favorite.account]?.ownerName;
+
+        // Try to get account details from stored details first
+        if (accountDetails[favorite.account] && accountDetails[favorite.account].number) {
+          accountNumber = accountDetails[favorite.account].number;
+        }
 
         // If we don't have it locally, try to get it from findAccounts (works for own accounts)
         if (!accountNumber) {
@@ -56,9 +63,20 @@ const FavoriteAccounts = ({ onNavigateToTransfer }) => {
             const accountResponse = await findAccounts({ aid: favorite.account });
             if (accountResponse.account && accountResponse.account.length > 0) {
               accountNumber = accountResponse.account[0].number;
+              ownerName = accountResponse.user?.name || accountResponse.account[0].owner?.name;
+
               // Store it locally for future use
               accountNumberMappings[favorite.account] = accountNumber;
               localStorage.setItem(localFavoritesKey, JSON.stringify(accountNumberMappings));
+
+              // Store detailed information
+              accountDetails[favorite.account] = {
+                number: accountNumber,
+                alias: favorite.alias,
+                ownerName: ownerName,
+                addedAt: new Date().toISOString()
+              };
+              localStorage.setItem(accountDetailsKey, JSON.stringify(accountDetails));
             }
           } catch (error) {
             // This will fail for other users' accounts due to CLIENT restrictions
@@ -71,6 +89,7 @@ const FavoriteAccounts = ({ onNavigateToTransfer }) => {
           _id: favorite.account,
           alias: favorite.alias,
           number: accountNumber || "Cuenta No Disponible", // Fallback if we can't get the number
+          ownerName: ownerName,
           accountId: favorite.account
         };
 
@@ -174,6 +193,20 @@ const FavoriteAccounts = ({ onNavigateToTransfer }) => {
           existingMappings[newFavorite.account] = account.number;
           localStorage.setItem(localFavoritesKey, JSON.stringify(existingMappings));
         }
+
+        // Also store additional account info for better reliability
+        const accountDetailsKey = `favoriteDetails_${userId}`;
+        const existingDetails = JSON.parse(localStorage.getItem(accountDetailsKey) || "{}");
+
+        if (newFavorite) {
+          existingDetails[newFavorite.account] = {
+            number: account.number,
+            alias: searchAlias.trim(),
+            ownerName: account.owner?.name,
+            addedAt: new Date().toISOString()
+          };
+          localStorage.setItem(accountDetailsKey, JSON.stringify(existingDetails));
+        }
       }
 
       setToast({ type: "success", message: "Cuenta agregada a favoritos exitosamente" });
@@ -198,15 +231,23 @@ const FavoriteAccounts = ({ onNavigateToTransfer }) => {
     try {
       await removeFavoriteAccount(accountId);
 
-      // Clean up localStorage mapping
+      // Clean up localStorage mappings and details
       const user = JSON.parse(localStorage.getItem("user"));
       const userId = user?._id || user?.uid;
       const localFavoritesKey = `favoriteNumbers_${userId}`;
+      const accountDetailsKey = `favoriteDetails_${userId}`;
+
       const accountNumberMappings = JSON.parse(localStorage.getItem(localFavoritesKey) || "{}");
+      const accountDetails = JSON.parse(localStorage.getItem(accountDetailsKey) || "{}");
 
       if (accountNumberMappings[accountId]) {
         delete accountNumberMappings[accountId];
         localStorage.setItem(localFavoritesKey, JSON.stringify(accountNumberMappings));
+      }
+
+      if (accountDetails[accountId]) {
+        delete accountDetails[accountId];
+        localStorage.setItem(accountDetailsKey, JSON.stringify(accountDetails));
       }
 
       setToast({ type: "success", message: "Cuenta eliminada de favoritos" });
@@ -219,6 +260,15 @@ const FavoriteAccounts = ({ onNavigateToTransfer }) => {
   };
 
   const handleFavoriteCardClick = (accountNumber) => {
+    // Prevent transfer if account number is not available
+    if (accountNumber === "Cuenta No Disponible") {
+      setToast({
+        type: "error",
+        message: "No se puede transferir a esta cuenta favorita. El número de cuenta no está disponible. Intenta eliminarla y agregarla nuevamente."
+      });
+      return;
+    }
+
     // Use the callback prop to change view and set destination account
     if (onNavigateToTransfer) {
       onNavigateToTransfer(accountNumber);
@@ -271,13 +321,16 @@ const FavoriteAccounts = ({ onNavigateToTransfer }) => {
           {favoriteAccounts.map((account) => (
             <div
               key={account._id || account.number}
-              className="favorite-account-card clickable"
+              className={`favorite-account-card ${account.number === "Cuenta No Disponible" ? "disabled" : "clickable"}`}
               onClick={() => handleFavoriteCardClick(account.number)}
             >
               <div className="favorite-card-header">
                 <div className="account-info">
                   <h3>{account.alias}</h3>
                   <span className="account-number">{account.number}</span>
+                  {account.ownerName && (
+                    <span className="owner-name">👤 {account.ownerName}</span>
+                  )}
                 </div>
                 <button
                   className="remove-favorite-btn"
@@ -294,7 +347,11 @@ const FavoriteAccounts = ({ onNavigateToTransfer }) => {
               </div>
 
               <div className="favorite-card-footer">
-                <p className="transfer-hint">Haz clic para transferir a esta cuenta</p>
+                {account.number === "Cuenta No Disponible" ? (
+                  <p className="error-hint">⚠️ Número de cuenta no disponible</p>
+                ) : (
+                  <p className="transfer-hint">Haz clic para transferir a esta cuenta</p>
+                )}
               </div>
             </div>
           ))}

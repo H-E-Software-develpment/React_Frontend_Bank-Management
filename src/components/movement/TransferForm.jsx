@@ -13,7 +13,9 @@ const TransferForm = ({ onSuccess, onCancel, destinationAccount = "" }) => {
   const [userAccounts, setUserAccounts] = useState([]);
   const [formData, setFormData] = useState({
     origin: "",
-    destination: destinationAccount || location.state?.destinationAccount || "",
+    destination: (destinationAccount === "Cuenta No Disponible" || location.state?.destinationAccount === "Cuenta No Disponible")
+      ? ""
+      : destinationAccount || location.state?.destinationAccount || "",
     amount: "",
     description: "",
   });
@@ -117,11 +119,12 @@ const TransferForm = ({ onSuccess, onCancel, destinationAccount = "" }) => {
 
         <div className="form-group">
           <label htmlFor="destination">Cuenta de Destino *</label>
-          {(destinationAccount || location.state?.destinationAccount) && (
+          {(destinationAccount && destinationAccount !== "Cuenta No Disponible") ||
+           (location.state?.destinationAccount && location.state?.destinationAccount !== "Cuenta No Disponible") ? (
             <p className="prefilled-notice">
               ⭐ Cuenta seleccionada desde favoritos
             </p>
-          )}
+          ) : null}
           <input
             type="text"
             id="destination"
@@ -131,7 +134,8 @@ const TransferForm = ({ onSuccess, onCancel, destinationAccount = "" }) => {
             required
             placeholder="Número de cuenta destino"
             maxLength="20"
-            className={(destinationAccount || location.state?.destinationAccount) ? "prefilled" : ""}
+            className={((destinationAccount && destinationAccount !== "Cuenta No Disponible") ||
+                       (location.state?.destinationAccount && location.state?.destinationAccount !== "Cuenta No Disponible")) ? "prefilled" : ""}
           />
         </div>
 

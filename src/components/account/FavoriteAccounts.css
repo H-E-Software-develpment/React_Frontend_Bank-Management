@@ -94,6 +94,18 @@
   background: #f3f4f6;
   padding: 0.25rem 0.5rem;
   border-radius: 4px;
+  display: block;
+  margin-bottom: 0.25rem;
+}
+
+.owner-name {
+  color: #6b7280;
+  font-size: 0.75rem;
+  background: #e0f2fe;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  display: block;
+  border: 1px solid #b3e5fc;
 }
 
 .remove-favorite-btn {
@@ -187,6 +199,29 @@
 
 .favorite-account-card.clickable:hover .transfer-hint {
   color: #3b82f6;
+}
+
+.favorite-account-card.disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.favorite-account-card.disabled:hover {
+  transform: none;
+  box-shadow: none;
+  border-color: #e2e8f0;
+}
+
+.error-hint {
+  margin: 0;
+  color: #ef4444;
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-align: center;
+  background: rgba(239, 68, 68, 0.1);
+  padding: 0.5rem;
+  border-radius: 6px;
+  border: 1px solid rgba(239, 68, 68, 0.2);
 }
 
 .no-favorites {
